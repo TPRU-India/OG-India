@@ -1,0 +1,5 @@
+include ogindia/data/ability/*
+include ogindia/data/demographic/*
+include ogindia/data/labor/*
+include ogindia/default_parameters.json
+include ogindia/OGindiaplots.mplstyle

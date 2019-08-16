@@ -1,0 +1,54 @@
+package:
+  name: ogindia
+  version: 0.0.0
+
+source:
+  path: ..
+
+requirements:
+  build:
+    - python
+    - "taxcalc>=2.4.2"
+    - setuptools
+    - scipy
+    - matplotlib
+    - dask
+    - mkl
+
+  run:
+    - python
+    - "taxcalc>=2.4.2"
+    - setuptools
+    - scipy
+    - matplotlib
+    - dask
+    - mkl
+
+about:
+  home: https://github.com/PSLmodels/OG-India/
+
+test:
+  imports:
+    - ogindia
+    - ogindia.SS
+    - ogindia.TPI
+    - ogindia.aggregates
+    - ogindia.constants
+    - ogindia.demographics
+    - ogindia.elliptical_u_est
+    - ogindia.execute
+    - ogindia.firm
+    - ogindia.fiscal
+    - ogindia.get_micro_data
+    - ogindia.household
+    - ogindia.income
+    - ogindia.macro_output
+    - ogindia.output_plots
+    - ogindia.parameter_plots
+    - ogindia.parameter_tables
+    - ogindia.parameters
+    - ogindia.parametersbase
+    - ogindia.postprocess
+    - ogindia.tax
+    - ogindia.txfunc
+    - ogindia.utils
