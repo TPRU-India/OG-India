@@ -47,4 +47,4 @@ If you run into errors running the example script, please open a new issue in th
 
 ## Citing OG-India
 
-OG-India (Version 0.5.7)[Source code], https://github.com/TPRU-India/OG-India
+OG-India (Version 0.0.1)[Source code], https://github.com/TPRU-India/OG-India
