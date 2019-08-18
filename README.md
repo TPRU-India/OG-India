@@ -1,6 +1,6 @@
 # OG-India
 
-OG-India is an overlapping-generations (OG) model of the economy of India that allows for dynamic general equilibrium analysis of federal tax policy. The model output focuses changes in macroeconomic aggregates (GDP, investment, consumption), wages, interest rates, and the stream of tax revenues over time. Careful documentation of the model--its output, and solution method--is available [here](https://github.com/TPRU-India/OG-India/blob/master/docs/OGindiadoc.pdf) and is regularly updated.
+OG-India is an overlapping-generations (OG) model of the economy of India that allows for dynamic general equilibrium analysis of federal tax policy. The model output focuses changes in macroeconomic aggregates (GDP, investment, consumption), wages, interest rates, and the stream of tax revenues over time. Careful documentation of the model--its output, and solution method--is available [here](https://github.com/TPRU-India/OG-India/blob/master/docs/OGINDIAdoc.pdf) and is regularly updated.
 
 
 ## Disclaimer
@@ -8,11 +8,7 @@ OG-India is an overlapping-generations (OG) model of the economy of India that a
 The model is currently under development. Users should be forewarned that the
 model components could change significantly. Therefore, there is NO GUARANTEE
 OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL
-ARTICLES, OR RESEARCH PURPOSES. Essentially, you should assume the calculations
-are unreliable until we finish the code re-architecture and have checked the
-results against other existing implementations of the tax code. The package
-will have released versions, which will be checked against existing code prior
-to release. Stay tuned for an upcoming release!
+ARTICLES, OR RESEARCH PURPOSES. Essentially, you should assume the calculations are unreliable until we finish the code re-architecture and have checked the results against other existing implementations of the tax code. The package will have released versions, which will be checked against existing code prior to release. Stay tuned for an upcoming release!
 
 
 ## Using/contributing to OG-India
@@ -36,7 +32,7 @@ to release. Stay tuned for an upcoming release!
     * Outputs from the model steady state solution under the baseline policy
     * See `SS.py` for what is in the dictionary object in this pickle file
   * `./run_examples/OUTPUT_BASELINE/TPI/TPI_vars.pkl`
-    * Outputs from the model timepath solution under the baseline policy
+    * Outputs from the model time path solution under the baseline policy
     * See `SS.py` for what is in the dictionary object in this pickle file
   * An analogous set of files in the `./run_examples/OUTPUT_REFORM` directory, which represent objects from the simulation of the reform policy
 
