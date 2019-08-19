@@ -1,0 +1,269 @@
+%!TEX root = ../OGtextbook.tex
+% TODO: Place this chapter as an appendix chapter after Python chapter
+%       and before LaTeX chapter
+
+In technical terms, \href{https://git-scm.com/}{\git} is a distributed version control system (DVCS). This means that users have complete copies of a source repository on their local hard drive. \git is valuable as a local version control system (LVCS) in that it can allow you to track changes in files and directories on your local computer without any connectedness to the internet or to other collaborators. However, \git's most powerful characteristics come from its ability to carefully allow multiple users to collaborate on the same files and record the changes in an ordered, structured, hierarchical way.
+
+\git is the software on your local machine that executes the commands and takes the snapshots that track the changes in marked files on your local machine and integrates those changes with remote repositories. The remote repositories are hosted by companies like \href{https://github.com/}{GitHub.com} or \href{https://bitbucket.org/}{Bitbucket.org}. This chapter will focus on GitHub.com, but Bitbucket.org is a good alternative with slightly different strengths and weaknesses.
+
+\begin{figure}[htb]\captionsetup{width=6.0in}
+  \caption{\textbf{Screenshot of Linux Contributors}}\label{FigLinuxContrib}
+  \fbox{\resizebox{6.0in}{4.0in}{\includegraphics{./images/LinuxContrib.png}}} \\
+  {\scriptsize{This snapshot was taken on September 28, 2016.}}
+\end{figure}
+
+\git software was born out of a dispute between the Linux kernel developers and the original version control provider for that group. The developers ended up creating their own free distributed version control sytem, which is \git.\footnote{See a short history of Git in \href{https://git-scm.com/book/en/v2/Getting-Started-A-Short-History-of-Git}{\citet[p.5]{ChaconStraub:2014}}, which is also freely available online at \href{https://git-scm.com/book/en/v2/}{https://git-scm.com/book/en/v2/}.} GitHub.com currently hosts thousands of open source repositories with virtually unlimited numbers of contributors to each repository. The GitHub repository for the \href{https://github.com/torvalds/linux}{Linux kernel} has over 200 contributors. Figure \ref{FigLinuxContrib} shows a snapshot of the contributors page of the Linux repository on GitHub. This page shows exactly who has contributed, when they contributed, and what they contributed. Some employers are more interested in a potential employee's GitHub page than they are in that person's resume.
+
+
+\section{Why Not Use Dropbox or Google Docs?}\label{SecGitDropb}
+
+  Easy and commonly used alternatives to \git as your version control and collaboration platform are Google Docs and \href{https://www.dropbox.com/}{Dropbox}. These two \git alternatives are file storage systems that sync changes to files across multiple storage locations of a single user or across many users. For simple file sharing, storage, and syncing, Google Docs and Dropbox are often preferred to \git. But for projects in which hierarchical permissions of who can edit, careful tracking of contribution attribution, and version history are important, \git is preferred.
+
+  Dropbox is nice because changes to a shared document on one person's machine are automatically updated on another person's machine. Dropbox offers some storage of previous versions of files. But it does not have detailed description and does not go back very far. Furthermore, Dropbox has trouble merging changes to a document that happen simultaneously. Suppose that you and your collaborator open a shared document simultaneously on your respective machines, and you both make changes to that document. Dropbox does not know whose changes dominate, so it updates the main document with the changes of whoever saves first and then makes a ``conflicted copy'' from the saved changes of whoever saves last. It is then up to the user to figure out how to manually merge those two files.
+
+  Google Docs have no merging problem because the document is automatically updated in real time on each user's computer, regardless of whether the document has been opened or not. This is made possible because a Google Doc resides primarily on remote Google servers. Despite this remote predominance, Google Docs do allow users to store copies of the files on their local drives to be able to use the documents while off-line. To a slightly greater degree than Dropbox, Google Docs allow some version history of who made changes, as well as a nice chat and comment interface for collaboration. But in Google Docs, everybody often has the same level of permission on making changes.
+
+  \git requires more deliberate decisions and effort about what gets merged, what does not get merged. And git has more specific rules about who decides what gets incorporated into the code and what does not. But with this extra complexity comes extra order, which is essential for large projects with lots of contributors. Additionally, \git provides a more specific version history with more refined ability to revert your code to a particular point in that history.
+
+  \git, Dropbox, and Google Docs each have different strengths and weaknesses. But \git is the standard for large projects with many contributors and a need for careful version control, changelog history, and contribution attribution.
+
+
+\section{Installing \texttt{Git} and Settings}\label{SecGitInstall}
+
+  A good set of \href{https://git-scm.com/book/en/v2/Getting-Started-Installing-Git}{instructions for installing \git} is available on the \git website.\footnote{See \href{https://git-scm.com/book/en/v2/Getting-Started-Installing-Git}{https://git-scm.com/book/en/v2/Getting-Started-Installing-Git}.} This \git site states, ``Even if it's already installed, it’s probably a good idea to update to the latest version.'' This textbook recommends that you follow this instruction and update \git on your local machine. It is worth noting that \git comes installed on every Mac OSX.
+
+  Once \git is installed on your machine, you should update the settings in the \texttt{git config} tool. The \texttt{git config} tool controls how \git looks and operates and customizes \git with your information. The obvious starting place is to enter your user name with which you contributions will be associated as well as your e-mail address at which collaborators can contact you.
+  \begin{lstlisting}[frame=single]
+    >>> git config --global user.name "FirstName LastName"
+    >>> git config --global user.email youremail@example.com
+  \end{lstlisting}
+  The \texttt{--global} option tells \git that these values are the default values that only need to be entered once. You can see all of the \texttt{--global} settings in \texttt{git config} by typing the \texttt{--list} command.
+  \begin{lstlisting}[frame=single]
+    >>> git config --list
+  \end{lstlisting}
+
+
+\section{\texttt{Git} and GitHub Structure, Workflow}\label{SecGitStruct}
+
+  A number of different \git workflows are used in open source projects, but most recommended flows include some form of \textit{fork}$\rightarrow$\textit{branch}$\rightarrow$\textit{pull request}. This textbook suggests the workflow displayed in Figure \ref{FigGitFlowDiag}. At first glance, this workflow looks very complicated and might make the user wish for the ease of Dropbox or a Google Doc. But the workflow depicted in Figure \ref{FigGitFlowDiag} exhibits some important principles and rules that protect code integrity and allow for many organized contributors.
+
+  \begin{figure}[htbp]\centering\captionsetup{width=6.0in}
+    \caption{\textbf{Flow diagram of \git and GitHub workflow}}\label{FigGitFlowDiag}
+    \fbox{\resizebox{6.0in}{4.6in}{\includegraphics{./images/GitFlowDiag.png}}}
+  \end{figure}
+
+  \begin{table}[htbp] \centering \captionsetup{width=6.0in}
+  \caption{\label{TabGitCommands}\textbf{List of common \git commands}}
+    \begin{threeparttable}
+    \begin{tabular}{>{\small}c |>{\small}l}
+      \hline\hline
+      Fig. \ref{FigGitFlowDiag} & \\
+      reference & \multicolumn{1}{c}{\small{\git command}} \\
+      \hline
+      \textcircled{1} & Click ``Fork'' button at \texttt{https://github.com/main\_acct/main\_repo\_name} \\[3mm]
+      \textcircled{2} & \texttt{git clone https://github.com/fork\_acct/main\_repo\_name.git} \\[2mm]
+      \textcircled{3} & \texttt{git checkout -b [BranchName]} \\[2mm]
+      \textcircled{4} & \texttt{git fetch upstream}\hspace{5mm} and\hspace{5mm} \texttt{git merge upstream/master} \\[2mm]
+      \textcircled{5} & \texttt{git push origin master} \\[2mm]
+      \textcircled{6} & \texttt{git merge master/[BranchName]} \\[2mm]
+      \textcircled{7} & \texttt{git add [FileName]} \hspace{5mm} or \hspace{5mm} \texttt{git add -A} \\[2mm]
+      \textcircled{8} & \texttt{git commit -m "[descriptive commit message]"} \\[2mm]
+      \textcircled{9} & \texttt{git push origin [BranchName]} \\[2mm]
+      \textcircled{10} & Click ``New pull request'' button at \\
+      &\qquad \texttt{https://github.com/fork\_acct/main\_repo\_name} \\
+      \hline\hline
+    \end{tabular}
+    % \begin{tablenotes}
+    %   \scriptsize{\item[*]See Table 8.1 in \citet{MittelbachGoossens:2004}.}
+    % \end{tablenotes}
+    \end{threeparttable}
+  \end{table}
+
+  The first characteristic to note from the workflow displayed in Figure \ref{FigGitFlowDiag} is the protected sanctity of the main code repository, labeled \textcircled{A}. There is only one arrow \textcircled{10} leading into the main repository. Submitting a pull request is the only way for foreign code to be incorporated into the main repository. Related to this point is the characteristic that all work on the main repository \textcircled{A} is performed in separate and separated repositories, both remote and local. This is highlighted by the horizontal dotted line in Figure \ref{FigGitFlowDiag} that separates the main repository from everything else in the figure.
+
+  One last introductory distinction to make with \git is the difference between remote repositories and local repositories. The horizontal line in Figure \ref{FigGitFlowDiag} separates these two concepts. Every object above the line in the figure is \textit{remote} and is located on a GitHub server somewhere in the cloud. Of the remote repositories (\textcircled{A}, \textcircled{B}, and \textcircled{E} above the horizontal line), the two branches of your fork of the main repository (\textcircled{B} and \textcircled{E}) to the left of the horizontal line will be called \textit{origin} and the main repository \textcircled{A} will be called \textit{upstream}. Section \ref{SecGitStructUpstream} discusses the significance of the \textit{upstream} reference.
+
+
+  \subsection{Create a fork and clone it}\label{SecGitStructFork}
+
+    Assume that the main repository is a GitHub repository. The first step one takes in the \git workflow when joining a project is to ``fork'' the main repository. This is shown in step \textcircled{1} in Figure \ref{FigGitFlowDiag}. This is done by going to the URL of the main repository on GitHub.com and clicking on the ``Fork'' button toward the upper-right corner of the screen as shown in Figure \ref{FigGitMainRepoMain}. GitHub will then give you the option to choose a GitHub account in which to place your fork of the main repository.
+
+    \begin{figure}[htb]\centering\captionsetup{width=6.0in}
+      \caption{\textbf{Main repository GitHub main page}}\label{FigGitMainRepoMain}
+      \fbox{\resizebox{6.0in}{3.4in}{\includegraphics{./images/GitForkScrnShot.png}}}
+    \end{figure}
+
+    A fork is a copy of the main repository that is placed in your remote GitHub account. The name of your fork is the same as the name of the main repository. The remote forked repository is labeled \textcircled{B} in Figure \ref{FigGitFlowDiag}. The only difference at this point is that the main repository is in a different account than your fork. It is important in the \git workflow that all changes that are made to the code from the main repository are made is a completely quarantined copy---the user's fork.
+
+    Once you have successfully forked the main repository, you want to \textit{clone} your fork. This action is represented by \textcircled{2} in Figure \ref{FigGitFlowDiag}. Cloning is the \git terminology for making a copy of a remote repository on your local machine, which local repository is tracked and related to the remote repository by the \git software. The local clone of your remote fork is represented by \textcircled{C} in Figure \ref{FigGitFlowDiag}. You clone the remote fork opening your terminal on your local machine, navigating to the directory in which you want to place the cloned repository and typing the following command,
+    \begin{lstlisting}[frame=single]
+      >>> git clone [remote fork Git URL]
+    \end{lstlisting}
+    where \texttt{[remote fork Git URL]} is the address that you copy when you click on the green ``Clone or Download'' button, which is below the ``Fork'' button on the main page of your remote fork \textcircled{B} (not the main repository \textcircled{A}).
+
+
+  \subsection{Branching, making changes, updating your remotes}\label{SecGitStructUpdate}
+
+    \textit{Branching} is one of the most powerful functions of \git. Once you are ready to start modifying the code, this textbook recommends that you always make those changes in a new branch of your local fork. Each repository can have multiple branches. Branches represent copies of the repository that need not be identical. Think of each branch as representing a different project on the code repository.
+
+    The main branch of a repository is called \textit{master}. It is automatically created with each newly forked or cloned repository. The master branch's purpose in this \git work flow is to be the baseline or fundamental reference, which is kept in sync with the main repository \textcircled{A} (see Section \ref{SecGitStructUpstream}). Branches \textcircled{B} and \textcircled{C} in Figure \ref{FigGitFlowDiag} are the master branches of the remote fork and local fork, respectively.
+
+    You can always check what branch of your repository you are in by typing the following command.
+    \begin{lstlisting}[frame=single]
+      >>> git branch
+    \end{lstlisting}
+    This will list all the branches of your repository, and it will highlight with an ``*'' the branch you are currently in. It is very important to always be sure you are working in the correct branch.
+
+    All changes to the master branch and new work should be in a new branch. You create a new branch off the master branch by the following command, which is action \textcircled{3} in Figure \ref{FigGitFlowDiag}.
+    \begin{lstlisting}[frame=single]
+      >>> git checkout -b [NewBranchName]
+    \end{lstlisting}
+    This command both creates the new branch and changes your directory to the new branch, no longer in the \textit{master} branch. If you have multiple branches, you can change between them by typing:
+    \begin{lstlisting}[frame=single]
+      >>> git checkout [BranchName]
+    \end{lstlisting}
+    It is important to note that the files in your local \git directory change when you change branches to the files associated with that branch. It is, therefore, important to make sure you are making changes in the branch with which you intend those changes to be associated.
+
+    As you work on your code and change the files in your repository, there are three steps you need to follow. You must (i) \textit{add}, (ii) \textit{commit}, and (iii) \textit{push} changes to your branch in your remote fork \textcircled{E} from your local branch \textcircled{D}.
+
+    You can check the status of the branch of your local repository by typing:
+    \begin{lstlisting}[frame=single]
+      >>> git status
+    \end{lstlisting}
+    This will show you if any files or folders have been modified, added, or deleted. You choose which of those files to track or stage for a future commit by \text{adding} them to the ``staging area'' as shown in action \textcircled{7} in Figure \ref{FigGitFlowDiag}. You can add a particular file by using the following command,
+    \begin{lstlisting}[frame=single]
+      >>> git add [FileName]
+    \end{lstlisting}
+    or you can add all the modified, added, or deleted files with the following command.
+    \begin{lstlisting}[frame=single]
+      >>> git add -A
+    \end{lstlisting}
+    If you type \texttt{git status} after adding files to the ``staging area'' to be tracked by \git, you will see that the files you added are now shown with a different status.
+
+    Once you have completed an intuitive well defined set of changes is a good time to commit those \textit{added} files. A \textit{commit} is a bundled group of changed files that can be summarized in one or two short sentences. You commit all files in the staging area that have been previously added by typing the following command. This is action \textcircled{8} in Figure \ref{FigGitFlowDiag}.
+    \begin{lstlisting}[frame=single]
+      >>> git commit -m "[descriptive commit summary message]"
+    \end{lstlisting}
+    As mentioned above, a commit message should be no more than two sentences, but is probably better as one sentence. This implies that you should commit your work often and not wait until you have completed whatever change your branch was created for. Never go too long without committing. And you should always commit at the end of a coding session or when switching branches.
+
+    A \textit{push}, shown as action \textcircled{9} in Figure \ref{FigGitFlowDiag}, is an action that takes all the commits that have not already been \textit{pushed} and copies them to the remote origin repository. This textbook recommends that commits from a project branch \textcircled{D} be pushed to a similar remote origin branch \textcircled{E}. A push is done by typing the following command.\footnote{If you leave off the \texttt{BranchName} in the command, your changes will default to the remote master branch of your fork. We do not recommend this.}
+    \begin{lstlisting}[frame=single]
+      >>> git push origin [BranchName]
+    \end{lstlisting}
+    Each \textit{push} will likely contain multiple \textit{commits}. Notice that your master branch and project branch---both in your remote fork and in your local repository---will be different from each other.
+
+    Once you feel that your changes are done and you have pushed them to your remote branch so that \textcircled{D} and \textcircled{E} are identical, you are ready to incorporate them into the main repository \textcircled{A}. This is done through a \textit{pull request}, as shown in action \textcircled{10} in Figure \ref{FigGitFlowDiag}. A pull request is made through the GitHub website. You go to the main page of the repository, make sure you are in the project branch on the website by clicking on the ``Branch:[BranchName]'' button in the upper-left area as shown in Figure \ref{FigGitMainRepoMain}. Then click on the ``New pull request button'', which is next to the ``Branch:[BranchName]'' button.
+
+    Before submitting this pull request, make sure it has an intuitive, descriptive, and concise title. Then make sure in the box below the title, that you put a detailed description of what is in the pull request. In the end, the pull request will be the cumulative changes from all the commits from all of the pushes since the creation of that branch. In the description, you may want to give context to the changes, and you may even want to point out areas on which you need an extra set of eyes.
+
+    Notice the different naming of this process. Rather than being called a \textit{push} in which the energy is coming from the source of the changes, it is called a \textit{pull request}. This name signifies that the energy comes from the destination of the change. You can think of a pull request as an invitation for the collaborators who run the main repository to \textit{merge} your changes into the main repository. It is for this reason that this open source work flow allows for the full democratization of coding. Anyone can take the code and make any changes they want. But only the code that is accepted by those who manage the main repository is incorporated.
+
+    Once you make a pull request and before someone chooses to \text{merge} that pull request, the status of your branch is linked to the pull request. That is, you can continue to make changes to your local branch, add/commit/push those changes to your remote branch, and those commits will be automatically added to the pull request.
+
+    If the changes in your code are accepted, those who manage the main repository \textcircled{A} will \textit{merge} in your changes. They may also open a dialog in the pull request in which the community can respond to and discuss the changes. In the end, the managers of the main repository have the option to reject the pull request.
+
+    Once your pull request is accepted and merged into the main repository. We recommend that you \texttt{git fetch upstream} the changes from the main repository \textcircled{A} to your local master branch \textcircled{C}, \texttt{git merge upstream/master} those changes, and \texttt{git push origin master} those changes to your remote master branch \textcircled{B}. You should then delete the local project branch \textcircled{D} by typing,
+    \begin{lstlisting}[frame=single]
+      >>> git branch -d [BranchName]
+    \end{lstlisting}
+    and then delete that remote project branch \textcircled{E} from your remote repository by typing the following.
+    \begin{lstlisting}[frame=single]
+      >>> git push origin --delete [BranchName]
+    \end{lstlisting}
+
+
+  \subsection{Set the upstream remote, fetch, merge, and push}\label{SecGitStructUpstream}
+
+    Once you have cloned your fork of the main repository, you will need a way to keep your fork updated---both your local cloned repository \textcircled{C} and your remote fork \textcircled{B}---with any changes that are made in the main repository \textcircled{A}. You will first want to designate a remote repository from which to draw code changes. \git designates your fork \textcircled{B} of the main repository as \textit{origin}. Designate the main repository as the remote for your fork by opening your terminal in your local machine, navigate to the main directory of your local clone, and type the following code,
+    \begin{lstlisting}[frame=single]
+      >>> git remote add upstream [main repo Git URL]
+    \end{lstlisting}
+    where \texttt{[main repo Git URL]} is the address that you copy when you go to the main repo main page and click on the green ``Clone or Download'' button, shown in Figure \ref{FigGitFlowDiag} under the ``Fork'' button.
+
+    Naming the main repository \textcircled{A} ``upstream'' in your local clone \textcircled{C} makes the commands easier to write that execute the updating step displayed as labeled \textcircled{4} and \textcircled{5} in Figure \ref{FigGitFlowDiag}. Each time you come back to your local fork of the repository, you will want to check the status of your fork with respect to the remote upstream main repository \textcircled{A} and with respect to the remote origin fork of the repository \textcircled{B}. This section focuses on updating your local fork \textcircled{C} with new changes in the remote upstream main repository \textcircled{A}.
+
+    You can tell \git to go get any changes to the remote upstream main repository by opening your terminal, navigating to the directory of the master branch of your local fork \textcircled{C}, and typing the following.
+    \begin{lstlisting}[frame=single]
+      >>> git fetch upstream
+    \end{lstlisting}
+    This command \textit{fetches} all the changes from the upstream repository and stages them for potentially being \textit{merged} into your local master branch \textcircled{C}. Note here that you are not staging this to be added to your new project branch \textcircled{D} of your local repository. The purpose of your local master branch \textcircled{C} is to remain up-to-date with the remote master repository \textcircled{A}.
+
+    Once these changes are staged with the \texttt{git fetch upstream} command, you can merge those changes from the remote master repo \textcircled{A} into your local master branch \textcircled{C} using the following command.
+    \begin{lstlisting}[frame=single]
+      >>> git merge upstream/master
+    \end{lstlisting}
+    Because of the work flow that this textbook advocates in Figure \ref{FigGitFlowDiag}, you should have no merge conflicts with this action. Your local master branch of the forked repository \textcircled{C} is meant simply as a local source that receives updates from the remote main repository \textcircled{A}. The only other time that your local master \textcircled{C} is updated from another source is when it was created by cloning \textcircled{2} the remote master \textcircled{B}, which action should happen only once.
+
+    Once the changes from the remote main repository \textcircled{A} have been fetched and merged into your local main branch \textcircled{C}, you just need to \textit{push} \textcircled{5} those changes up to your remote master branch of your fork \textcircled{B}. This is done by being in your master branch and typing the following.
+    \begin{lstlisting}[frame=single]
+      >>> git push origin master
+    \end{lstlisting}
+    The \texttt{push} command copies the changes from your local master branch \textcircled{C} into your remote master branch \textcircled{B}. The term \textit{origin} refers to the set of branches, including the master, in your remote fork of the main repository. In Figure \ref{FigGitFlowDiag}, repositories \textcircled{B} and \textcircled{E} are branches of the \textit{origin} remotes. At this point, your remote master branch of your fork \textcircled{B}, your local master branch of your fork \textcircled{C}, and the main repository \textcircled{A} are all syncronized.
+
+    The last function we detail here is the action of \textit{merging} changes from your local master branch \textcircled{C} that came from the main repository \textcircled{A} into your local project branch \textcircled{D}. This is action \textcircled{6} in Figure \ref{FigGitFlowDiag}. Go to the branch that will be the destination of the merge or the branch where you want to incorporate the changes. In this case, that is the local project branch \textcircled{D}.
+    \begin{lstlisting}[frame=single]
+      >>> git checkout [ProjectBranch]
+    \end{lstlisting}
+    Now merge the master branch into the project branch.
+    \begin{lstlisting}[frame=single]
+      >>> git merge master/[ProjectBranch]
+    \end{lstlisting}
+    If the merge is nontrivial, then you will get a conflict message like the following.
+    \begin{lstlisting}[frame=single]
+      Auto-merging master.txt
+      CONFLICT (content): Merge conflict in master.txt
+      Automatic merge failed; fix conflicts and then commit the result.
+    \end{lstlisting}
+    Now type the following to open the globally set \git mergetool (see Section \ref{SecGitInstall} for mergetool global setting).
+    \begin{lstlisting}[frame=single]
+      >>> git mergetool
+    \end{lstlisting}
+    Finally, you can commit the changed files and be done.
+    \begin{lstlisting}[frame=single]
+      >>> git commit -m "Description of merge commit"
+    \end{lstlisting}
+
+
+\section{\texttt{Git} Cheat Sheet Commands}\label{SecGitCheat}
+
+  In this section, I list a number of useful \git commands that are not as frequently used.
+  \begin{itemize}
+    \item List the last commit for each branch in a local repository.
+    \begin{lstlisting}[frame=single]
+      >>> git branch -v
+    \end{lstlisting}
+    \item List branches that you have or have not yet merged into your current branch.
+    \begin{lstlisting}[frame=single]
+      >>> git branch --merged
+      >>> git branch --no-merged
+    \end{lstlisting}
+    \item Undo erroneous commits in your local branch. Let \texttt{[commit\#]} be the commit number to which you want to rewind. This will usually be a reference like \texttt{f2f7281451364c29c75e07ddb3be1d8d7d6c25dc}. Type the following.
+    \begin{lstlisting}[frame=single]
+      >>> git reset [commit#]
+    \end{lstlisting}
+    \item Undo erroneous commits merged into your \textit{upstream} repository. Note that it is usually thought of as bad form to erase \git history.\footnote{See \git Koan, ``\href{http://stevelosh.com/blog/2013/04/git-koans/}{Only the Gods}''.} Let ``upstream'' be the name of the repository and ``BranchName'' be the branch of that repository with the offending commits. First, pull the branch with the bad commits to your local repo:
+    \begin{lstlisting}[frame=single]
+      >>> git pull upstream [BranchName]
+    \end{lstlisting}
+    Let \texttt{[commit\#]} be the commit number to which you want to rewind. Rewrite the commit history on your local repo using the following command:
+    \begin{lstlisting}[frame=single]
+      >>> git reset --hard [commit#]
+    \end{lstlisting}
+    Now push this back up to the remote repository.
+    \begin{lstlisting}[frame=single]
+      >>> git push -f upstream [BranchName]
+    \end{lstlisting}
+    \item Create a local branch that is a copy of someone's pull request branch.
+    \begin{lstlisting}[frame=single]
+      >>> git checkout -b [NewBranchName]
+      >>> git pull [PR sender branch git URL] [NewBranchName]
+    \end{lstlisting}
+  \end{itemize}
+
+
+\section{Using GitHub for Collaborative Issue Tracking}\label{SecGitIssues}
+
+  GitHub repositories have an ``Issues'' section that is a powerful place for collaboratively discussing and resolving issues with the code. The issues interface of a GitHub repository is accessed via the ``Issues'' tab in the upper-right area of the main page of the repository as shown in Figure \ref{FigGitMainRepoMain}. GitHub issues create a central remote location for resolving questions with your code. An issue creates a permanent record of what the question was, the path to resolving it, and what was the resolution. GitHub issues also serve as a non-email method of communicating about a project. This is valuable because resolution of issues can often span weeks and even months.
+
+  A good example of an effective GitHub issue is \href{https://github.com/open-source-economics/OG-USA/issues/237}{issue \# 237} of the \href{https://github.com/open-source-economics/OG-USA}{\ogindia} repository. One can tag GitHub collaborators in these issues, add images and equations, and reference other issues and pull requests. \href{https://help.github.com/articles/working-with-advanced-formatting/}{This link} and \href{https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet}{this link} has some of the markdown options for augmenting your discussion in GitHub issues.
+

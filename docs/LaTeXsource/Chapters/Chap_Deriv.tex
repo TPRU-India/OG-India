@@ -1,0 +1,76 @@
+%!TEX root = ../OGUSAdoc.tex
+
+This appendix contains derivations from the theory in the body of this book.
+
+
+\section{Properties of the CES Production Function}\label{SecAppDerivCES}
+
+  The constant elasticity of substitution (CES) production function of capital and labor was introduced by \citet{Solow:1956} and further extended to a consumption aggregator by \citet{Armington:1969}. The CES production function of aggregate capital $K_t$ and aggregate labor $L_t$ we use in Chapter \ref{Chap_Firms} is the following,
+  \begin{equation}\tag{\ref{EqFirmsCESprodfun}}
+    Y_t = F(K_t, L_t) \equiv Z_t\biggl[(\gamma)^\frac{1}{\ve}(K_t)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}(e^{g_y t}L_t)^\frac{\ve-1}{\ve}\biggr]^\frac{\ve}{\ve-1} \quad\forall t
+  \end{equation}
+  where $Y_t$ is aggregate output (GDP), $Z_t$ is total factor productivity, $\gamma$ is a share parameter that represents the capital share of income in the Cobb-Douglas case ($\ve=1$), and $\ve$ is the elasticity of substitution between capital and labor. The stationary version of this production function is given in Chapter \ref{Chap_Stnrz}. We drop the $t$ subscripts, the ``$\:\hat{\,}\:$''stationary notation, and use the stationarized version of the production function \eqref{EqStnrzCESprodfun} for simplicity.
+  \begin{equation}\tag{\ref{EqStnrzCESprodfun}}
+    Y =  Z\biggl[(\gamma)^\frac{1}{\ve}(K)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}(L)^\frac{\ve-1}{\ve}\biggr]^\frac{\ve}{\ve-1}
+  \end{equation}
+  The Cobb-Douglas production function is a nested case of the general CES production function with unit elasticity $\ve=1$.
+  \begin{equation}\label{EqAppDerivCES_CobbDoug}
+    Y = Z(K)^\gamma(L)^{1-\gamma}
+  \end{equation}
+
+
+
+  \subsection{Wages as a function of interest rates}\label{SecAppDerivCESwr}
+
+    An important property of the CES production function for the solution method of \ogindia is that the interest rate $r_t$ and wage $w_t$ are functions of the capital labor ratio. This property implies that the wage every period $w_t$ is just a function of the interest rate $r_t$, and vice versa. The first step is to show that the output-capital ratio ($Y/K$) and the output-labor ($Y/L$) ratio are both functions of the capital-labor ratio ($K/L$).
+    \begin{equation}\label{EqAppDerivCES_YL}
+      \begin{split}
+      Y &= Z\biggl[(\gamma)^\frac{1}{\ve}(K)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}(L)^\frac{\ve-1}{\ve}\biggr]^\frac{\ve}{\ve-1} \\
+      &= Z\left[(\gamma)^\frac{1}{\ve}(K)^\frac{\ve-1}{\ve}\left(\frac{L^\frac{\ve-1}{\ve}}{L^\frac{\ve-1}{\ve}}\right) + (1-\gamma)^\frac{1}{\ve}(L)^\frac{\ve-1}{\ve}\right]^\frac{\ve}{\ve-1} \\
+      &= ZL\left[(\gamma)^\frac{1}{\ve}\left(\frac{K}{L}\right)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}\right]^\frac{\ve}{\ve-1} \\
+      \Rightarrow\quad \frac{Y}{L} &= Z\left[(\gamma)^\frac{1}{\ve}\left(\frac{K}{L}\right)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}\right]^\frac{\ve}{\ve-1}
+      \end{split}
+    \end{equation}
+
+    \begin{equation}\label{EqAppDerivCES_YK}
+      \begin{split}
+      Y &= Z\biggl[(\gamma)^\frac{1}{\ve}(K)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}(L)^\frac{\ve-1}{\ve}\biggr]^\frac{\ve}{\ve-1} \\
+      &= Z\left[(\gamma)^\frac{1}{\ve}(K)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}(L)^\frac{\ve-1}{\ve}\left(\frac{K^\frac{\ve-1}{\ve}}{K^\frac{\ve-1}{\ve}}\right)\right]^\frac{\ve}{\ve-1} \\
+      &= ZK\left[(\gamma)^\frac{1}{\ve} + (1-\gamma)^\frac{1}{\ve}\left(\frac{L}{K}\right)^\frac{\ve-1}{\ve}\right]^\frac{\ve}{\ve-1} \\
+      \Rightarrow\quad \frac{Y}{K} &= Z\left[(\gamma)^\frac{1}{\ve} + (1-\gamma)^\frac{1}{\ve}\left(\frac{L}{K}\right)^\frac{\ve-1}{\ve}\right]^\frac{\ve}{\ve-1}
+      \end{split}
+    \end{equation}
+
+    Solving for the firm's first order conditions for capital and labor demand from profit maximization \eqref{EqStnrzProfit} gives the following equations in their respective stationarized forms from Chapter \ref{Chap_Stnrz}.
+    \begin{align}
+      w &= (Z)^\frac{\ve-1}{\ve}\left[(1-\gamma)\left(\frac{Y}{L}\right)\right]^\frac{1}{\ve} \tag{\ref{EqStnrzFOC_L}} \\
+      r &= (1 - \tau^{corp})(Z)^\frac{\ve-1}{\ve}\left[\gamma\left(\frac{Y}{K}\right)\right]^\frac{1}{\ve} - \delta + \tau^{corp}\delta^\tau \tag{\ref{EqFirmFOC_K}}
+    \end{align}
+    As can be seen from \eqref{EqStnrzFOC_L} and \eqref{EqFirmFOC_K}, the wage $w$ and interest rate $r$ are functions of $Y/L$ and $Y/K$, respectively. Equations \eqref{EqAppDerivCES_YL} and \eqref{EqAppDerivCES_YK} show that both $Y/L$ and $Y/K$ are functions of the capital-labor ratio $K/L$. Substituting \eqref{EqAppDerivCES_YL} and \eqref{EqAppDerivCES_YK} into \eqref{EqStnrzFOC_L} and \eqref{EqFirmFOC_K}, respectively, gives expressions of the wage $w$ and interest rate $r$ in terms of the capital-labor ratio $K/L$.
+    \begin{align}
+      w &= (1-\gamma)^\frac{1}{\ve}Z\left[(\gamma)^\frac{1}{\ve}\left(\frac{K}{L}\right)^\frac{\ve-1}{\ve} + (1-\gamma)^\frac{1}{\ve}\right]^\frac{1}{\ve-1} \label{EqAppDerivCES_FOCL} \\
+      r &= (1 - \tau^{corp})(\gamma)^\frac{1}{\ve}Z\left[(\gamma)^\frac{1}{\ve} + (1-\gamma)^\frac{1}{\ve}\left(\frac{L}{K}\right)^\frac{\ve-1}{\ve}\right]^\frac{1}{\ve-1} - \delta + \tau^{corp}\delta^\tau \label{EqAppDerivCES_FOCK}
+    \end{align}
+    In the Cobb-Douglas unit elasticity case ($\ve=1$) of the CES production function, the first order conditions are more easily expressed in terms of the capital-labor ratio.
+    \begin{align}
+      \text{if}\:\:\,\ve=1:\quad w &= (1-\gamma)Z\left(\frac{K}{L}\right)^\gamma \label{EqAppDerivCES_CDFOCL} \\
+      \text{if}\:\:\:\ve=1:\quad r &= (1 - \tau^{corp})\gamma Z\left(\frac{L}{K}\right)^{1-\gamma} - \delta + \tau^{corp}\delta^\tau \label{EqAppDerivCES_CDFOCK}
+    \end{align}
+
+    With $w$ and $r$ expressed in terms of the capital-labor ratio $K/L$ in \eqref{EqAppDerivCES_FOCL} and \eqref{EqAppDerivCES_FOCK}, we can write the expressions for the capital-labor ratio as a function of the interest rate and, therefore, the wage as a function of the interest rate. We first solve equation \eqref{EqAppDerivCES_FOCK} for the capital-labor ratio to get the expression for $K/L$ as a function of the interest rate $r$.
+    \begin{equation}\label{EqAppDerivCES_KLr}
+      \frac{K}{L} = \left(\frac{(1-\gamma)^\frac{1}{\ve}}{\left[\frac{r + \delta - \tau^{corp}\delta^\tau}{(1 - \tau^{corp})\gamma^\frac{1}{\ve}Z}\right]^{\ve-1} - \gamma^\frac{1}{\ve}}\right)^\frac{\ve}{\ve-1}
+    \end{equation}
+    In the Cobb-Douglas unit elasticity case ($\ve=1$), we solve equation \eqref{EqAppDerivCES_CDFOCK} for the capital-labor ration to get the expression for $K/L$ as a function of the interest rate $r$.
+    \begin{equation}\label{EqAppDerivCES_CDKLr}
+      \text{if}\:\:\:\ve=1:\quad \frac{K}{L} = \left[\frac{(1 - \tau^{corp})\gamma Z}{r + \delta - \tau^{corp}\delta^\tau}\right]^\frac{1}{1-\gamma}
+    \end{equation}
+
+    Substituting \eqref{EqAppDerivCES_KLr} into \eqref{EqAppDerivCES_FOCL} gives the expression for the wage $w$ as a function of the interest rate $r$ in the general CES case.
+    \begin{equation}\label{EqAppDerivCES_wr}
+      w = (1-\gamma)^\frac{1}{\ve}Z\left[(\gamma)^\frac{1}{\ve}\left(\frac{(1-\gamma)^\frac{1}{\ve}}{\left[\frac{r + \delta - \tau^{corp}\delta^\tau}{(1 - \tau^{corp})\gamma^\frac{1}{\ve}Z}\right]^{\ve-1} - \gamma^\frac{1}{\ve}}\right) + (1-\gamma)^\frac{1}{\ve}\right]^\frac{1}{\ve-1}
+    \end{equation}
+    In the Cobb-Douglas unit elasticity case ($\ve=1$), we substitute \eqref{EqAppDerivCES_CDKLr} into \eqref{EqAppDerivCES_CDFOCL} gives the expression for the wage $w$ as a function of the interest rate $r$.
+    \begin{equation}\label{EqAppDerivCES_CDwr}
+      \text{if}\:\:\:\ve=1:\quad w = (1-\gamma)Z\left[\frac{(1 - \tau^{corp})\gamma Z}{r + \delta - \tau^{corp}\delta^\tau}\right]^\frac{\gamma}{1-\gamma}
+    \end{equation}

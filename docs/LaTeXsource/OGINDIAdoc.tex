@@ -1,0 +1,185 @@
+\documentclass[letterpaper,12pt]{book}
+
+\usepackage{amsmath, amsfonts, amscd, amssymb, amsthm}
+%\usepackage{import}
+\usepackage{versions}
+\usepackage{crop}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{basicstyle=\footnotesize\ttfamily, language=Python}
+\usepackage{makeidx}
+\usepackage[pageanchor=false]{hyperref}
+\usepackage{ifthen}
+\usepackage[format=hang,font=normalsize,labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{natbib}
+\usepackage{chapterbib}
+\usepackage[nottoc]{tocbibind}
+\usepackage{setspace}
+\usepackage{placeins}
+\usepackage{framed}
+\usepackage{enumitem}
+\usepackage{threeparttable}
+\usepackage{geometry}
+\geometry{letterpaper,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{delarray}
+\usepackage{lscape}
+\usepackage{float,color, colortbl}
+%\usepackage[pdftex]{graphicx}
+\usepackage{hyperref}
+\usepackage{tabu}
+\usepackage{appendix}
+\usepackage{verbatim}
+
+
+\usepackage{bm}
+\usepackage{color}
+
+\lstset{frame=single,
+  language=Python,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+
+\include{thmstyle}
+\bibliographystyle{aer}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\newcommand{\ve}{\varepsilon}
+\newcommand{\ip}[2]{\langle #1,#2 \rangle}
+
+\hypersetup{colorlinks,linkcolor=red,urlcolor=blue,citecolor=red}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[chapter] % Number theorems by chapter
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}{Definition}[chapter] % Number definitions by chapter
+\newtheorem{derivation}{Derivation}[chapter] % Number derivations by chapter
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}{Exercise}[chapter] % Number exercises by chapter
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}{Proposition}[chapter] % Number propositions by chapter
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\numberwithin{equation}{chapter}
+\renewcommand\theenumi{\roman{enumi}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\ogusa}{\texttt{OG-USA}\,}
+\newcommand{\ogindia}{\texttt{OG-India}\,}
+\newcommand{\git}{\texttt{Git}\,}
+\newcommand{\taxcalc}{\texttt{Tax-Calculator}\,}
+\newcommand{\btax}{\texttt{B-Tax}\,}
+
+
+%\numberwithin{Exercise}{chapter}
+
+\sectionbib{\section*}{section}
+
+\crop
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\title{OG-India: Documentation for the Large-scale Dynamic General Equilibrium Overlapping Generations Model for Indian Policy Analysis}
+\author{Richard W. Evans\\ \emph{University of Chicago} \and Jason DeBacker \\ \emph{University of South Carolina}}
+\date{\LARGE{August 2019} \\
+{\footnotesize{(version 2019.08.b)}}}
+\maketitle
+
+\chapter{Preface}
+
+  The development of this model benefited from support from the Tax Policy Research Unit of India as well as from the Open Source Economics Laboratory at the University of Chicago an Open Research Group, Inc. All Python code for the computational model is available at \href{https://github.com/TPRU-India/OG-India}{https://github.com/TPRU-India/OG-India}. Contributions to the model code can also be viewed in detail on the OG-India \href{https://github.com/TPRU-India/OG-India/graphs/contributors}{contributions page}.
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+
+\mainmatter
+
+\part{Introduction}
+  \chapter{Introduction}\label{Chap_Intro}
+    \input{Chapters/Chap_Intro}
+  \chapter{Exogenous Inputs and Endogenous Output}\label{Chap_ExogEndog}
+    \input{Chapters/Chap_ExogEndog}
+
+\part{Households Theory}\label{PartHHtheory}
+  \chapter{Demographics}\label{Chap_Demog}
+    \input{Chapters/Chap_Demog}
+  \chapter{Lifetime Earnings Profiles}\label{Chap_LfEarn}
+    \input{Chapters/Chap_LfEarn}
+  \chapter{Households}\label{Chap_House}
+    \input{Chapters/Chap_House}
+  \chapter{Calibrated Bequests}\label{Chap_Beq}
+    \input{Chapters/Chap_Beq}
+
+\part{Firms Theory}\label{PartFirmTheory}
+  \chapter{Firms}\label{Chap_Firms}
+    \input{Chapters/Chap_Firms}
+
+\part{Government Theory}\label{PartGovtTheory}
+  \chapter{Household Taxes and Tax-Calculator}\label{Chap_TaxCalc}
+    \input{Chapters/Chap_TaxCalc}
+  \chapter{Corporate Taxes and B-Tax}\label{Chap_BTax}
+    \input{Chapters/Chap_BTax}
+  \chapter{Unbalanced Government Budget Constraint}\label{Chap_UnbalGBC}
+    \input{Chapters/Chap_UnbalGBC}
+
+\part{Market clearing and Stationarization}\label{PartMCstat}
+  \chapter{Market Clearing}\label{Chap_MarkClr}
+    \input{Chapters/Chap_MarkClr}
+  \chapter{Stationarization}\label{Chap_Stnrz}
+    \input{Chapters/Chap_Stnrz}
+
+\part{Equilibrium Definitions and Solution Methods}\label{PartEqlbm}
+  \chapter{Stationary Steady-state Equilibrium}\label{Chap_SSeqlb}
+    \input{Chapters/Chap_SSeqlb}
+  \chapter{Stationary Non Steady-state Equilibrium}\label{Chap_NSSeqlb}
+    \input{Chapters/Chap_NSSeqlb}
+
+\part{Calibration and International Options}\label{PartSolMthCal}
+  \chapter{Calibration}\label{Chap_Calibr}
+    % \input{Chapters/Chap_Calibr}
+  \chapter{Open Economy Specifications}\label{Chap_SmOpEcn}
+    \input{Chapters/Chap_SmOpEcn}
+
+
+\appendix
+\appendixpage
+\addappheadtotoc
+
+\chapter{Derivations}\label{Chap_Deriv}
+  \input{Chapters/Chap_Deriv}
+% \chapter{Using Python}\label{Chap_Python}
+%   \input{Chapters/Chap_Python}
+% \chapter{Using \texttt{Git} and GitHub.com}\label{Chap_Git}
+%   \input{Chapters/Chap_Git}
+% \chapter{Using \LaTeX}\label{Chap_LaTeX}
+%   \input{Chapters/Chap_LaTeX}
+
+
+\bibliography{OGINDIAdoc.bib}
+
+\end{document}
