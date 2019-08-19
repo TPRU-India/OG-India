@@ -1,4 +1,7 @@
-from __future__ import print_function
+'''
+Example script for setting policy and running OG-India
+'''
+
 # import modules
 import multiprocessing
 from dask.distributed import Client
