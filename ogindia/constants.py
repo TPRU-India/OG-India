@@ -55,3 +55,6 @@ ToGDP_LABELS = {'D': 'Debt-to-GDP ($D_{t}/Y_t$)',
                 'C': 'Consumption-Output Ratio ($C_{t}/Y_t$)',
                 'I': 'Investment-Output Ratio ($I_{t}/Y_t$)',
                 'total_revenue': 'Tax Revenue-to-GDP ($REV_{t}/Y_t$)'}
+
+GROUP_LABELS = {0: '0-25%', 1: '25-50%', 2: '50-70%', 3: '70-80%',
+                4: '80-90%', 5: '90-99%', 6: 'Top 1%'}
