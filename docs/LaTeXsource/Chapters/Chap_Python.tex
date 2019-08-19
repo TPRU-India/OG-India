@@ -1,0 +1,129 @@
+%!TEX root = ../OGtextbook.tex
+% TODO: Place this chapter as an appendix chapter before Git chapter
+
+Python is a powerful and elegant open-source programming language that has become widely used in scientific computing and the new field of open data science. Since its introduction in 1991, Python's internal features, libraries, and user network have expanded in ways that have made it a go-to language for prototyping processes. Its ease of integrating with compiled languages such as C and Fortran make it ideal as the master scripting language in hierarchical programs and modules. Python also has great structures and syntax that are amenable to flexible functional programming, object oriented programming, and parallel processing.
+
+It is true that Python's ``interpreted'' language status means that it is often slower than Fortran or C. But most of the Python functions and libraries that could leverage compiled language speedups--such as root finders, optimizers, matrix inversion, and matrix decomposition---are already implemented in Python as wrappers of the optimized C and Fortran code.
+
+
+\section{Installing Python}\label{SecPythonInstall}
+
+  A basic Python kernel can be installed from \href{https://www.python.org/downloads/}{https://www.python.org/downloads/}. However, this is not the recommendation of this book. Because Python has many important libraries that can be added to the distribution, this book recommends downloading the \href{https://www.continuum.io/downloads}{Anaconda distribution} of Python (https://www.continuum.io/downloads), which is curated by Continuum Analytics. In previous years, many users remained with version 2.x despite the existence of 3.x. However, Python 3.x has now been extensively tested and widely adopted by the Python community and it is advisable to download the latest version (currently 3.x). The Anaconda distribution of Python is easy to install on Mac OS X, Windows, and Linux machines.
+
+
+\section{Learning Python}\label{SecPythonLearning}
+
+  Many resources exist for learning Python. Most widely used are the online tutorials. Below are some favorite examples.
+
+  \begin{itemize}
+    \item \href{https://docs.python.org/3/tutorial/}{The official Python 3 tutorial site} (https://docs.python.org/3/tutorial/)
+    \item \href{https://www.codecademy.com/learn/python}{Code Academy's Python learning module} (https://www.codecademy.com/learn/python)
+    \item \href{http://lectures.quantecon.org/py/index.html}{Quant-Econ.net} tutorial of how to use Python for Economics applications (http://lectures.quantecon.org/py/index.html)
+    \item Applied and Computational Mathematics Emphasis at Brigham Young University \href{http://www.acme.byu.edu/?page\_id=2067}{open source Python training labs} (http://www.acme.byu.edu/?page\_id=2067)
+  \end{itemize}
+
+  In addition, a number of excellent textbooks and reference manuals are very helpful and may be available in your local library. Or you may just want to have these in your own library. \citet{Lutz:2013} is a giant 1,500-page reference manual that has an expansive collection of materials targeted at beginners. \citet{Beazley:2009} is a more concise reference but is targeted at readers with some experience using Python. Despite its focus on a particular set of tools in the Python programming language, \citet{McKinney:2013} has a great introductory section that can serve as a good starting tutorial. Further, its focus on Python's data analysis capabilities is truly one of the important features of Python. Rounding out the list is \citet{Langtangen:2010}. This book's focus on scientists and engineers makes it a unique reference for optimization, wrapping C and Fortran and other scientific computing topics using Python.
+
+  As with any programming language, the long-run internalized learning comes from using the language in relevant applications. This book will provide many economic applications of a broad set of computational tools using Python. These tools are applicable in many other fields. And they can be implemented in other programming languages. But Python currently occupies a strong niche of being a programming language with broad capabilities, having an active and expanding user group, having a syntax that is efficient and relatively easy to write, and being open source. From a general standpoint, it is likely that Python's use will continue expanding in economics.
+
+
+\section{Principles of Writing Good Code}\label{SecPythonPrinc}
+
+  \begin{itemize}
+    \item Python has its own preferred style of writing good code. These best practices are listed in \href{https://www.python.org/dev/peps/pep-0008/}{PEP 8 -- Style Guide for Python Code} (https://www.python.org/dev/peps/pep-0008/).\footnote{PEP stands for ``Python Enhancement Proposals''.}
+    \item Work with 1-dimensional arrays or numpy vectors as much as possible. For example, a vector $x$ with $n$ elements should have shape \texttt{x.shape = (n,)}. In addition, some operations on matrix $\bm{A}$ with $m$ rows and $n$ columns can be more efficiently executed by vectorizing $\bm{A}$ or transforming it into a one-dimensional array $a$ with $m\times n$ elements.
+    \item Write functions for particular lines of code that get reused and represent a clear concept from the theory. This is an art of understanding efficient coding. It also means that if you change a concept or augment your code, you might only have to make the change in one place even though that concept gets used in the code in multiple places.
+    \item Avoid using global variables across functions.
+    \item Use Python tuples to pass arguments between functions because the data types can vary across tuple elements (e.g., you can pack integer elements with float elements).
+    \item Learn how to use the \texttt{*args} and \texttt{**kwargs} constructs in passing tuples of varying lengths into functions.
+    \item Store sets of functions in intuitive groups in separate python script (\texttt{file.py}) files. These scripts are called modules. Import these functions when needed by importing the module using \texttt{import file as fl}. Then you can call those functions in your current script using \texttt{fl.funcname(...)}.
+    \item Place comments and meta data extensively throughout your code. Every function should have explanations of what the function does, what are the inputs, what functions are called, what objects are created inside the function, and what is the output of the function. This will feel like overkill at the beginning, but it will save you and everyone else who every uses your code lots of time over the long run. \href{https://www.python.org/dev/peps/pep-0257/}{PEP 257} (https://www.python.org/dev/peps/pep-0257/) provides a description of Python docstring and meta data conventions.
+    \item Use the theory to map out what the optimal structure of your code should be. A universal principle in scientific computing is that insights, efficiency, and discovery can happen going both from theory to computation as well as from computation to theory. Use them both extensively. If you have a problem in the code, it might be highlighting an issue in the theory. If you have a problem in the theory, you might be able to discover the reason by computing different scenarios and special cases.
+    \item Use parallelization where possible. Python's \texttt{multiprocessing} library makes this very easy on your own machine. For more advanced and flexible parallel processing, the \texttt{mpi4py} library imports tools for implementing MPI (message passing interface) operations.
+  \end{itemize}
+
+
+\section{Running Python}\label{SecPythonRun}
+
+  asdf
+
+  \subsection{Text editor and terminal}\label{SecPythonRunText}
+
+    Talk about Vim, Emacs, Sublime Text 3.
+
+
+  \subsection{IDE}\label{SecPythonRunIDE}
+
+    Spyder is like MATLAB. ipython
+
+
+  \subsection{Jupyter Notebook}\label{SecPythonRunJupyt}
+
+    Jupyter is a general platform that can display ``notebooks'' in your browser that can interactively run code in a number of languages and can display other surrounding rich text elements such as text, equations, figures, and links. Jupyter notebooks are ideal for teaching programming and giving examples because they can be executed and manipulated in real time and they can be saved as a record for future use. I will use Jupyter notebooks in class to teach some of the computational techniques you will be using in your problem sets. I will save these notebooks to the class GitHub repository.
+
+    If you have installed the Anaconda distribution of Python on your computer, you can open the Jupyter notebook server dashboard by going to your terminal and typing \texttt{jupyter notebook}. If you do not have the Anaconda distribution of Python, you can install Jupyter by following the instructions at \href{http://jupyter.readthedocs.io/en/latest/install.html}{http://jupyter.readthedocs.io/en/latest/install.html}. The \href{https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/}{Jupyter/IPython Notebook Quick Start Guide} (https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/) provides a nice introduction to installing and using the Jupyter notebook system.
+
+    You can open a Jupyter notebook by navigating in your terminal to the directory on your local computer in which a Jupyter notebook is saved. Type the following command in your terminal to open the Jupyter server dashboard.
+    \begin{lstlisting}[frame=single]
+      >>> jupyter notebook
+    \end{lstlisting}
+    As shown in Figure \ref{FigPythonJupInit}, the Jupyter dashboard interface will show all of the files available in that directory. To open one of the Jupyter notebooks, simply double click on the desired file with the ``.ipynb'' file-type suffix.
+
+    \begin{figure}[htbp]\centering\captionsetup{width=6.0in}
+      \caption{\textbf{Screenshot of Jupyter startup dashboard}}\label{FigPythonJupInit}
+      \fbox{\resizebox{6.0in}{1.8in}{\includegraphics{./images/JupyterDash.png}}}
+    \end{figure}
+
+
+\section{Debugging}\label{SecPythonDebug}
+
+  \begin{itemize}
+    \item Debugging is unavoidable.
+    \item Develop an endurance to stick with the problem until it is solved.
+    \item Coding errors go down with experience, holding ability constant.
+      \begin{itemize}
+        \item Coding ability usually rises over time, which means that it is not clear that debugging ever goes away.
+      \end{itemize}
+    \item Stackoverflow is your friend.
+  \end{itemize}
+
+
+\section{Python cheat sheet}\label{SecPythonCheat}
+
+  In this section, I list a number of useful Python commands that are not as frequently used.
+  \begin{itemize}
+    \item How to set IPython to automatically reload modules that had previously been imported. Load the IPython \texttt{autoreload} extension by typing the following two Python magic function commands.
+    \begin{lstlisting}[frame=single]
+      >>> %load_ext autoreload
+      >>> %autoreload 2
+    \end{lstlisting}
+  \end{itemize}
+
+
+\section{Optimization: Root Finders and Minimizers}\label{SecPythonOpt}
+
+  Root finders and minimizers are the two key tools for solving numerical optimization problems. We will define the general formulation of an optimization problem as a minimization problem,
+  \begin{equation}\label{EqPythonOptGen}
+    \min_{\bm{x}}\: f\left(\bm{x},\bm{z}|\bm{\theta}\right) \quad\text{s.t}\quad \bm{g}(\bm{x},\bm{z}|\bm{\theta})\geq\bm{0} \quad\text{and}\quad \bm{h}(\bm{x}) = \bm{0}
+  \end{equation}
+  where $\bm{x}=\{x_1, x_2,... x_N\}$ is a vector of $N$ endogenous variables, $\bm{z}$ is a vector of exogenous variables, $\bm{\theta}$ is a vector of model parameters, $f$ is a scalar-valued potentially nonlinear function of $(\bm{x},\bm{z})$ given parameters $\bm{\theta}$, $\bm{g}$ is a system of $K$ potentially nonlinear inequality constraints, and $\bm{h}$ is a system of $J$ potentially nonlinear equality constraints.
+
+  An example of a minimization problem of the form \eqref{EqPythonOptGen} is the 3-period lived agent OG model with exogenous labor supply in Chapter \ref{Chap_3perSimp}. Each household's optimization problem is the following.
+  \begin{equation}\label{EqPython3perProb}
+    \begin{split}
+      \max_{b_{2,t+1},b_{3,t+2}}\: &u\bigl(c_{1,t}\bigr) + \beta u\bigl(c_{2,t+1}\bigr) + \beta^2 u\bigl(c_{3,t+2}\bigr) \\
+      &\text{s.t.}\quad c_{s,t} > 0 \quad\text{for}\quad s = \{1,2,3\} \quad\text{and}\quad K_t > 0 \quad\forall t \\
+      &\text{and}\quad c_{s,t} + b_{s+1,t+1} = (1+r_t)b_{s,t} + w_t n_{s,t} \quad\text{for}\quad s = \{1,2,3\}
+    \end{split}
+  \end{equation}
+
+  Mapping the 3-period-lived OG model example from \eqref{EqPython3perProb} to the general minimization problem formulation in \eqref{EqPythonOptGen} is instructive. First, notice that \eqref{EqPython3perProb} is posed as a maximization problem while \eqref{EqPythonOptGen} is posed as a minimization problem. This is not an issue because any maximization problem of the form $\max_{\bm{x}}\bm{f}(\bm{x})$ has an isomorphic minimization problem formulation $\min_{\bm{x}} -\bm{f}(\bm{x})$.
+
+  The vector of choice variables $\bm{x}$ in \eqref{EqPython3perProb} is the two-element vector of savings choices $(b_{2,t+1}, b_{3,t+2})$. The objective functions $f$ to be minimized is the discounted lifetime utility $u(c_{1,t}) + \beta u(c_{2,t+1}) + \beta^2 u(c_{3,t+2})$ and is a function of.
+
+
+  \subsection{Root finders}\label{SecPythonRoot}
+
+    \citet[p.442-443]{PressEtAl:2007} highlight that with nonlinear multidimensional root finding problems, `` you can never be sure that the root is there at all until you have found it.... It cannot be overemphasized, however, how crucially success depends on having a good first guess for the solution,....'' \citet[p. 473]{PressEtAl:2007} also state, ``We make an extreme, but wholly defensible statement: There are no good, general methods for solving systems of more than one nonlinear equation. Furthermore, it is not hard to see why (very likely) there never will be any good, general methods''.
+
+    Because initial values are so important to root finders and minimization problems are often more robust to compute, \citet[p.172]{Judd:1998} suggests running a minimization problem with a loose stopping rule on the vector of squared errors. Then one can use that solution as the initial guess for the root finder.

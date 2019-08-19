@@ -1,0 +1,129 @@
+%!TEX root = ../OGtextbook.tex
+% TODO: Place this chapter as an appendix chapter after Git chapter
+
+\LaTeX is a document preparation system that produces high-quality typesetting and is ideal for technical, scientific, and computational subjects. The mathematical equation engine in \LaTeX is the standard in technical and mathematical typesetting. Further, the broader philosophy of \LaTeX documents is to provide document-type and reference-type formatting functions separate from the content of the document. This allows the \LaTeX user to focus on content, and let separate commands determine the formatting. This can also allow for particular content to be quickly reformatted to another style.
+
+An encylopedic reference for most \LaTeX functionality is \citet{MittelbachGoossens:2004}. But it valuable to search the resources available online because they often describe the typesetting innovations that come from writing your own source \LaTeX code.
+
+Programs like \href{https://www.mackichan.com/index.html?products/swp.html~mainFrame}{Scientific WorkPlace} provide a GUI interface for \LaTeX. But this program is expensive, and it is not as flexible as writing your own \LaTeX document code. This book recommends writing your own \LaTeX document source code. Very soon, you will begin to think in terms of the the compiled \LaTeX document even though you are typing source code.
+
+
+\section{Installing \LaTeX}\label{SecLaTeXInstall}
+
+  A great summary page for installing \LaTeX on Mac OS X, Windows, or Linux is available from \href{https://www.latex-project.org/get/}{this link} (https://www.latex-project.org/get/). Following these instructions will install on your local machine a number of libraries, packages, and tools to help you use \LaTeX for your typesetting.
+
+
+\section{Running \LaTeX}\label{SecLaTeXRun}
+
+  The traditional use and workflow of creating a document in \LaTeX is to write a plain text source document (.tex subscript) in any text editor and then have the \LaTeX engine compile that document into a format you want to use (typically a PDF). You can use any text editor for creating \LaTeX source documents (.tex files), but there are advantages to using text editors that ``work well'' with \LaTeX.
+
+  Most distributions of \LaTeX that you would download from the link in Section \ref{SecLaTeXInstall} will come with a text editor, such as TeXShop for Mac, WinEdt for Windows, and TeXMaker for Linux. The \href{http://www.vim.org/}{Vim} text editor is a sign of a true programmer. Vim is most effective for the coder that prefers to keep his hands on the keyboard and avoid the mouse. Vim has a \LaTeX plug in that allows the user to compile .tex files to PDF directly. The \href{https://www.sublimetext.com/3}{Sublime Text 3} is a more versatile text editor that has a nice LaTeXTools package that allows you to compile PDFs from .tex files directly from the editor. On Mac OS X, Sublime Text also requires the Skim PDF viewer. Sublime Text and Vim also have various color and syntax highlighting options for .tex and other \LaTeX source files. Figure \ref{FigSubTxtSkimPDF} shows a screen shot of a .tex file in Sublime Text 3 and its compiled PDF version.
+
+  \begin{figure}[htbp]\centering\captionsetup{width=6.0in}
+    \caption{\textbf{Screenshot Sublime Text 3 .tex document and compiled PDF in Skim}}\label{FigSubTxtSkimPDF}
+    \fbox{\resizebox{6.0in}{3.3in}{\includegraphics{./images/SubTxtSkimPDF.png}}}
+  \end{figure}
+
+
+\section{Learning \LaTeX}\label{SecLaTeXLearning}
+
+  Many tutorials are available online for learning \LaTeX. However, most of those tutorials focus on functionality specific to a particular field. The best way to start using \LaTeX is to get a template of a source .tex document and then use online resources to learn more specific functionality. Figure \ref{FigLaTeXtemplate} is a snapshot of a template.tex file.
+
+  \begin{figure}[htbp]\centering\captionsetup{width=4.0in}
+    \caption{\textbf{Screenshot of \LaTeX template .tex file}}\label{FigLaTeXtemplate}
+    \fbox{\resizebox{4.0in}{5.0in}{\includegraphics{./images/LaTeXtemplate.png}}}
+  \end{figure}
+
+  \href{http://stackoverflow.com/}{Stackoverflow.com} is a great resource for answers to particular \LaTeX questions. Anyone can publicly browse the questions and answers stored at Stackoverflow. If you register for an account, you will be able to ask questions through Stackoverflow and even give answers. In most cases, you will find that someone else has already asked a question similar to yours and that a series of answers have been given.
+
+
+\section{\LaTeX\space Cheat Sheet}\label{SecLaTeXCheat}
+
+  This section provides a list of some of the key \LaTeX commands and structures that you will likely use.
+
+  \subsection{Math symbols and Greek Letters}
+
+    A good list of the \LaTeX commands for math symbols and Greek letters is available at \href{http://web.ift.uib.no/Teori/KURS/WRK/TeX/symALL.html}{this link}.\footnote{See \href{http://web.ift.uib.no/Teori/KURS/WRK/TeX/symALL.html}{http://web.ift.uib.no/Teori/KURS/WRK/TeX/symALL.html}.} Math symbols and Greek letters are included in the text by using dollar signs to bracket the commands that are to be rendered in math mode. Typing the text, ``The Greek letter \verb|$\theta$| represents \verb|$x + y$|'' will be rendered as ``The Greek letter $\theta$ represents $x + y$''.
+
+    \textbf{Equations.} The \texttt{amsmath} package (American Mathematical Society) allows for a number of higher math display options that you will use often. The standard construct for equations is the \verb|\begin{equation}| environment. The following text will render the following equation.
+
+    \begin{lstlisting}[frame=single]
+      \usepackage{amsmath}
+      \begin{equation}
+        u\left(c_{s,t}\right) = \frac{(c_{s,t})^{1-\gamma} - 1}{1 - \gamma}
+      \end{equation}
+    \end{lstlisting}
+    \begin{equation}\tag{1}
+      u\left(c_{s,t}\right) = \frac{(c_{s,t})^{1-\gamma} - 1}{1 - \gamma}
+    \end{equation}
+
+    \noindent Table \ref{TabLaTeXAMStypes} shows various display environment options for the \texttt{amsmath} package.
+
+    \begin{table}[htbp] \centering \captionsetup{width=6.0in}
+    \caption{\label{TabLaTeXAMStypes}\textbf{Display environment options in the \texttt{amsmath} package}}
+      \begin{threeparttable}
+      \begin{tabular}{>{\small}l >{\small}l |>{\small}l}
+        \hline\hline
+        \multicolumn{1}{c}{\textbf{\small{Numbered}}} & \multicolumn{1}{c}{\textbf{\small{Not numbered}}} & \multicolumn{1}{c}{\textbf{\small{Description}}} \\
+        \hline
+        \texttt{equation} & \texttt{equation*} & One line, one equation \\
+        \texttt{multline} & \texttt{multline*} & One unaligned multiple-line equation, one equation number \\
+        \texttt{gather} & \texttt{gather*} & Several equations without alignment \\
+        \texttt{align} & \texttt{align*} & Several equations with multiple alignments \\
+        \texttt{flalign} & \texttt{flalign*} & Several equations: horizontally spread form of \texttt{align} \\
+        \texttt{split} &  & A simple alignment within a multiple-line equation \\
+        \texttt{gathered} &  & A ``mini-page'' with unaligned equations \\
+        \texttt{aligned} &  & A ``mini-page'' with multiple alignments \\
+        \hline\hline
+      \end{tabular}
+      \begin{tablenotes}
+        \scriptsize{\item[*]See Table 8.1 in \citet{MittelbachGoossens:2004}.}
+      \end{tablenotes}
+      \end{threeparttable}
+    \end{table}
+
+
+  \subsection{Brackets and parentheses in equations}
+
+    TODO: Add content.
+
+
+  \subsection{Matrices in equations}
+
+    TODO: Add content.
+
+  \subsection{Tables}
+
+    TODO: Add content.
+
+  \subsection{Figures}
+
+    A good package and set up for producing figures is the \texttt{graphicx} package. These figures are called ``float'' objects because \LaTeX intelligently chooses their placement in the document based on natural breaks in the text. The code that produced Figure \ref{FigSubTxtSkimPDF} is the following.
+
+    \begin{lstlisting}[frame=single]
+      \usepackage{graphicx}
+      \usepackage[format=hang,font=normalsize,labelfont=bf]{caption}
+
+      \begin{figure}[htbp]\centering\captionsetup{width=4.0in}
+        \caption{\textbf{Screenshot of \LaTeX template .tex file}}\label{FigLaTeXtemplate}
+        \fbox{\resizebox{4.0in}{5.0in}{\includegraphics{./images/LaTeXtemplate.png}}}
+      \end{figure}
+    \end{lstlisting}
+
+
+  \subsection{BibTeX and references}
+
+    TODO: Add content.
+
+
+\section{Debugging}\label{SecLaTeXDebug}
+
+  At some point, you will have created a \LaTeX source .tex file and hit compile and you will receive an error. The PDF will not compile. \LaTeX produces an error log file in this case. The first time you read an error log, it may look incomprehensible. But as you experience more of these error logs, you find where the key information is located to help you solve your problem most efficiently.
+
+  The error log often displays at the bottom of your text editor. In Sublime Text, the error log is displayed in the window at the bottom of the screen, pictured in Figure \ref{FigSubTxtSkimPDF} at the bottom of the left-hand-side. Key information is the line number of the source code where the error occured. And the error log will also usually give you some kind of helpful description as to what the problem was.
+
+  In many cases, the error will be an incomplete closure, such as  \$\:\$, (), [], \{\}, \verb|\begin{}\end{}|. Other common errors include misspelled function names and missing source packages in the preamble.
+
+  One last comment with debugging \LaTeX code is that \href{http://stackoverflow.com/}{Stackoverflow.com} is your friend. As was mentioned in Section \ref{SecLaTeXRun}, Stackoverflow is a great resource for answers to particular \LaTeX questions. Anyone can publicly browse the questions and answers stored at Stackoverflow. This book recommends that you register for an account. This will allow you to ask questions through Stackoverflow and even give answers. In most cases, you will find that someone else has already asked a question similar to yours and that a series of answers have been given.
+
+
