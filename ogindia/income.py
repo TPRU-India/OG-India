@@ -1,9 +1,9 @@
 '''
 ------------------------------------------------------------------------
 Functions for created the matrix of ability levels, e.  This can
-    only be used for looking at the 25, 50, 70, 80, 90, 99, and 100th
-    percentiles, as it uses fitted polynomials to those percentiles.
-    For a more generic version, see income_nopoly.py.
+only be used for looking at the 25, 50, 70, 80, 90, 99, and 100th
+percentiles, as it uses fitted polynomials to those percentiles.
+For a more generic version, see income_nopoly.py.
 ------------------------------------------------------------------------
 '''
 import numpy as np
@@ -33,7 +33,7 @@ def graph_income(ages, abil_midp, abil_pcts, emat, filesuffix=""):
 
     Returns:
         None
-    --------------------------------------------------------------------
+
     '''
     J = abil_midp.shape[0]
     abil_mesh, age_mesh = np.meshgrid(abil_midp, ages)
@@ -289,7 +289,7 @@ def get_e_interp(S, age_wgts, age_wgts_80, abil_wgts, plot=False):
     if S == 80 and np.array_equal(abil_wgts,
                                   np.array([0.25, 0.25, 0.2, 0.1, 0.1,
                                             0.09, 0.01])) is True:
-            emat_new_scaled = emat_orig
+        emat_new_scaled = emat_orig
     else:
         # generate abil_midp vector
         J = abil_wgts.shape[0]
