@@ -1,14 +1,17 @@
 name: ogindia-dev
 channels:
-- PSLmodels
-- conda-forge
 dependencies:
 - python
+- "numpy>=1.14"
+- "pandas>=0.23"
+- "bokeh>=0.13"
+- requests
+- numba
+- ipython
 - setuptools
 - mkl
 - scipy>=0.18.1
 - matplotlib
-- taxcalc>=2.4.2
 - dask>=0.20.0
 - pytest
 - pytest-pep8
@@ -16,3 +19,6 @@ dependencies:
 - pycodestyle
 - pylint
 - coverage
+- pip
+- pip:
+    - git+https://github.com/TPRU-India/taxcalc.git@master
