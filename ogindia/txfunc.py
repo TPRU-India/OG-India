@@ -25,6 +25,7 @@ from ogindia import get_micro_data
 from ogindia.utils import DEFAULT_START_YEAR
 
 TAX_ESTIMATE_PATH = os.environ.get("TAX_ESTIMATE_PATH", ".")
+MIN_OBS = 100
 
 '''
 ------------------------------------------------------------------------
@@ -51,16 +52,16 @@ def gen_3Dscatters_hist(df, s, t, output_dir):
 
     '''
     # Truncate the data
-    df_trnc = df[(df['Total labor income'] > 5) &
-                 (df['Total labor income'] < 500000) &
-                 (df['Total capital income'] > 5) &
-                 (df['Total capital income'] < 500000)]
+    # df_trnc = df[(df['Total labor income'] > 5) &
+    #              (df['Total labor income'] < 500000) &
+    #              (df['Total capital income'] > 5) &
+    #              (df['Total capital income'] < 500000)]
+    df_trnc = df[(df['Total labor income'] > 0)]
     inc_lab = df_trnc['Total labor income']
     inc_cap = df_trnc['Total capital income']
     etr_data = df_trnc['ETR']
     mtrx_data = df_trnc['MTR labor income']
     mtry_data = df_trnc['MTR capital income']
-
     # Plot 3D scatterplot of ETR data
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -70,7 +71,8 @@ def gen_3Dscatters_hist(df, s, t, output_dir):
     ax.set_zlabel('ETR')
     plt.title('ETR, Lab. Inc., and Cap. Inc., Age=' + str(s) +
               ', Year=' + str(t))
-    filename = ("ETR_Age_" + str(s) + "_Year_" + str(t) + "_data.png")
+    filename = ("ETR_Age_" + str(s) + "_Year_" + str(t) + "_data_IndiaTax.png")
+
     fullpath = os.path.join(output_dir, filename)
     fig.savefig(fullpath, bbox_inches='tight')
     plt.close()
@@ -126,7 +128,7 @@ def gen_3Dscatters_hist(df, s, t, output_dir):
     ax.set_zlabel('Marginal Tax Rate (Capital Inc.)')
     plt.title("MTR Capital Income, Cap. Inc., and Cap. Inc., Age=" +
               str(s) + ", Year=" + str(t))
-    filename = ("MTRy_Age_" + str(s) + "_Year_" + str(t) + "_data.png")
+    filename = ("MTRy_Age_" + str(s) + "_Year_" + str(t) + "_data_IndiaTax.png")
     fullpath = os.path.join(output_dir, filename)
     fig.savefig(fullpath, bbox_inches='tight')
     plt.close()
@@ -207,10 +209,11 @@ def plot_txfunc_v_data(tx_params, data, params):  # This isn't in use yet
 
     else:
         # Make comparison plot with truncated income domains
-        data_trnc = data[(data['Total labor income'] > 5) &
-                         (data['Total labor income'] < 800000) &
-                         (data['Total capital income'] > 5) &
-                         (data['Total capital income'] < 800000)]
+        data_trnc = data
+        # data_trnc = data[(data['Total labor income'] > 5) &
+        #                  (data['Total labor income'] < 800000) &
+        #                  (data['Total capital income'] > 5) &
+        #                  (data['Total capital income'] < 800000)]
         X_trnc = data_trnc['Total labor income']
         Y_trnc = data_trnc['Total capital income']
         if rate_type == 'etr':
@@ -250,8 +253,8 @@ def plot_txfunc_v_data(tx_params, data, params):  # This isn't in use yet
             fullpath = os.path.join(output_dir, filename)
             fig.savefig(fullpath, bbox_inches='tight')
 
-        if show_plots:
-            plt.show()
+        # if show_plots:
+        #     plt.show()
 
         plt.close()
 
@@ -834,10 +837,11 @@ def txfunc_est(df, s, t, rate_type, tax_func_type, numparams,
         plt.close()
 
         # Make comparison plot with truncated income domains
-        df_trnc_gph = df[(df['Total labor income'] > 5) &
-                         (df['Total labor income'] < 800000) &
-                         (df['Total capital income'] > 5) &
-                         (df['Total capital income'] < 800000)]
+        df_trnc_gph = df
+        # df_trnc_gph = df[(df['Total labor income'] > 5) &
+        #                  (df['Total labor income'] < 800000) &
+        #                  (df['Total capital income'] > 5) &
+        #                  (df['Total capital income'] < 800000)]
         X_gph = df_trnc_gph['Total labor income']
         Y_gph = df_trnc_gph['Total capital income']
         if rate_type == 'etr':
@@ -1003,20 +1007,20 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
     # drop all obs with ETR < -0.15
     data.drop(data[data['ETR'] < -0.15].index, inplace=True)
     # drop all obs with ATI, TLI, TCincome< $5
-    data.drop(data[(data['Adjusted total income'] < 5) |
-                   (data['Total labor income'] < 5) |
-                   (data['Total capital income'] < 5)].index,
-              inplace=True)
+    # data.drop(data[(data['Adjusted total income'] < 5) |
+    #                (data['Total labor income'] < 5) |
+    #                (data['Total capital income'] < 5)].index,
+    #           inplace=True)
     # drop all obs with MTR on capital income > 0.99
-    data.drop(data[data['MTR capital income'] > 0.99].index,
-              inplace=True)
-    # drop all obs with MTR on capital income < -0.45
-    data.drop(data[data['MTR capital income'] < -0.45].index,
-              inplace=True)
-    # drop all obs with MTR on labor income > 0.99
-    data.drop(data[data['MTR labor income'] > 0.99].index, inplace=True)
-    # drop all obs with MTR on labor income < -0.45
-    data.drop(data[data['MTR labor income'] < -0.45].index, inplace=True)
+    # data.drop(data[data['MTR capital income'] > 0.99].index,
+    #           inplace=True)
+    # # drop all obs with MTR on capital income < -0.45
+    # data.drop(data[data['MTR capital income'] < -0.45].index,
+    #           inplace=True)
+    # # drop all obs with MTR on labor income > 0.99
+    # data.drop(data[data['MTR labor income'] > 0.99].index, inplace=True)
+    # # drop all obs with MTR on labor income < -0.45
+    # data.drop(data[data['MTR labor income'] < -0.45].index, inplace=True)
 
     # Create an array of the different ages in the data
     min_age = int(np.maximum(data['Age'].min(), s_min))
@@ -1067,7 +1071,7 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
                             df_mtry.shape[0]])
         del df
         # 240 is 8 parameters to estimate times 30 obs per parameter
-        if df_minobs < 240 and s < max_age:
+        if df_minobs < MIN_OBS and s < max_age:
             # '''
             # --------------------------------------------------------
             # Don't estimate function on this iteration if obs < 500.
@@ -1082,7 +1086,7 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
             mtrxparam_arr[s-s_min, :] = np.nan
             mtryparam_arr[s-s_min, :] = np.nan
 
-        elif df_minobs < 240 and s == max_age:
+        elif df_minobs < MIN_OBS and s == max_age:
             # '''
             # --------------------------------------------------------
             # If last period does not have sufficient data, fill in
@@ -1152,20 +1156,21 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
 
             # Estimate marginal tax rate of labor income function
             # MTRx(x,y)
-            (mtrxparams, mtrx_wsumsq_arr[s-s_min],
-                mtrx_obs_arr[s-s_min]) = \
-                txfunc_est(df_mtrx, s, t, 'mtrx', tax_func_type,
-                           numparams, output_dir, graph_est)
-            mtrxparam_arr[s-s_min, :] = mtrxparams
-            del df_mtrx
-            # Estimate marginal tax rate of capital income function
-            # MTRy(x,y)
-            (mtryparams, mtry_wsumsq_arr[s-s_min],
-                mtry_obs_arr[s-s_min]) = \
-                txfunc_est(df_mtry, s, t, 'mtry', tax_func_type,
-                           numparams, output_dir, graph_est)
-            mtryparam_arr[s-s_min, :] = mtryparams
-
+            # (mtrxparams, mtrx_wsumsq_arr[s-s_min],
+            #     mtrx_obs_arr[s-s_min]) = \
+            #     txfunc_est(df_mtrx, s, t, 'mtrx', tax_func_type,
+            #                numparams, output_dir, graph_est)
+            # mtrxparam_arr[s-s_min, :] = mtrxparams
+            mtrxparam_arr[s-s_min, :] = mtrxparams = 0
+            # del df_mtrx
+            # # Estimate marginal tax rate of capital income function
+            # # MTRy(x,y)
+            # (mtryparams, mtry_wsumsq_arr[s-s_min],
+            #     mtry_obs_arr[s-s_min]) = \
+            #     txfunc_est(df_mtry, s, t, 'mtry', tax_func_type,
+            #                numparams, output_dir, graph_est)
+            # mtryparam_arr[s-s_min, :] = mtryparams
+            mtryparam_arr[s-s_min, :] = mtryparams = 0
             del df_mtry
 
             if NoData_cnt > 0 & NoData_cnt == s-s_min:
