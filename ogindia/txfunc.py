@@ -1619,8 +1619,8 @@ def get_tax_func_estimate(
     dict_params = tax_func_estimate(
         BW, S, starting_age, ending_age, start_year, baseline,
         analytical_mtrs, tax_func_type, age_specific, reform, data=data,
-        client=client, num_workers=num_workers, desc_data=False,
-        graph_data=False, graph_est=False)
+        client=client, num_workers=num_workers, desc_data=desc_data,
+        graph_data=graph_data, graph_est=graph_est)
     if baseline:
         baseline_pckl = (
             tx_func_est_path or "TxFuncEst_baseline{}.pkl".format(guid))
