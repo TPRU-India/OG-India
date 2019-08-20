@@ -1293,7 +1293,8 @@ def tax_func_estimate(BW, S, starting_age, ending_age,
                       start_year=DEFAULT_START_YEAR, baseline=True,
                       analytical_mtrs=False, tax_func_type='DEP',
                       age_specific=False, reform={}, data=None,
-                      client=None, num_workers=1):
+                      client=None, num_workers=1, desc_data=False,
+                      graph_data=False, graph_est=False):
     '''
     This function performs analysis on the source data from Tax-
     Calculator and estimates functions for the effective tax rate (ETR),
@@ -1321,6 +1322,9 @@ def tax_func_estimate(BW, S, starting_age, ending_age,
         client (Dask client object): client
         num_workers (int): number of workers to use for parallelization
             with Dask
+        desc_data (bool): whether to print descriptive stats to screen
+        graph_data (bool): whether to plot tax data
+        graph_est (bool): whether to plot tax functions
 
     Returns:
         dict_param (dict): dictionary with tax function parameters
@@ -1333,9 +1337,6 @@ def tax_func_estimate(BW, S, starting_age, ending_age,
     print('BW = ', BW, "begin year = ", start_year,
           "end year = ", end_yr)
     numparams = int(12)
-    desc_data = False
-    graph_data = False
-    graph_est = False
     years_list = np.arange(start_year, end_yr + 1)
     if age_specific:
         ages_list = np.arange(s_min, s_max+1)
