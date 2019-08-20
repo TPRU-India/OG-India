@@ -18,7 +18,7 @@ config = {
     'packages': ['ogindia'],
     'include_package_data': True,
     'name': 'ogindia',
-    'install_requires': ['taxcalc', 'dask', 'scipy', 'matplotlib', 'mkl'],
+    'install_requires': [],
     'package_data': {
                      'ogindia': [
                                'parameters_metadata.json',
