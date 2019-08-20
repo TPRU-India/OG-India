@@ -21,11 +21,11 @@ BASELINE_DIR = "./OUTPUT_BASELINE"
 DEFAULT_START_YEAR = 2018
 
 # Latest year TaxData extrapolates to
-TC_LAST_YEAR = 2028
+TC_LAST_YEAR = 2023
 
 # Year of data used (e.g. PUF or CPS year)
-CPS_START_YEAR = taxcalc.Records.CPSCSV_YEAR
-PUF_START_YEAR = taxcalc.Records.PUFCSV_YEAR
+# CPS_START_YEAR = taxcalc.Records.CPSCSV_YEAR
+# PUF_START_YEAR = taxcalc.Records.PUFCSV_YEAR
 
 
 def mkdirs(path):
