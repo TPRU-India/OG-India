@@ -12,12 +12,14 @@ import dask.multiprocessing
 import numpy as np
 import pickle
 import pkg_resources
-from ogindia.utils import DEFAULT_START_YEAR, TC_LAST_YEAR, PUF_START_YEAR
+from ogindia.utils import DEFAULT_START_YEAR, TC_LAST_YEAR
+
+DATA_START_YEAR = 2017
 
 
 def get_calculator(baseline, calculator_start_year, reform=None,
                    data=None, gfactors=None, weights=None,
-                   records_start_year=PUF_START_YEAR):
+                   records_start_year=DATA_START_YEAR):
     '''
     This function creates the tax calculator object with the policy
     specified in reform and the data specified with the data kwarg.
@@ -33,7 +35,7 @@ def get_calculator(baseline, calculator_start_year, reform=None,
             to use to extrapolate data over budget window
         weights (DataFrame): weights for Records object
         records_start_year (int): the start year for the data and
-            weights dfs (default is set to the PUF start year as defined
+            weights dfs (default is set to the DATA start year as defined
             in the Tax-Calculator project)
 
     Returns:
@@ -43,19 +45,9 @@ def get_calculator(baseline, calculator_start_year, reform=None,
     '''
     # create a calculator
     policy1 = Policy()
-    if data is not None and "cps" in data:
-        records1 = Records.cps_constructor()
-        # impute short and long term capital gains if using CPS data
-        # in 2012 SOI data 6.587% of CG as short-term gains
-        records1.p22250 = 0.06587 * records1.e01100
-        records1.p23250 = (1 - 0.06587) * records1.e01100
-        # set total capital gains to zero
-        records1.e01100 = np.zeros(records1.e01100.shape[0])
-    elif data is not None:
-        records1 = Records(data=data, gfactors=gfactors, weights=weights,
-                           start_year=records_start_year)
-    else:
-        records1 = Records()
+    records1 = Records()
+    grecs = GSTRecords()
+    crecs = CorpRecords()
 
     if baseline:
         if not reform:
@@ -71,9 +63,11 @@ def get_calculator(baseline, calculator_start_year, reform=None,
     policy1.implement_reform(reform)
 
     # the default set up increments year to 2013
-    calc1 = Calculator(records=records1, policy=policy1)
+    calc1 = Calculator(records=records1, policy=policy1,
+                       gstrecords=grecs, corprecords=crecs,
+                       verbose=False)
 
-    # this increment_year function extrapolates all PUF variables to
+    # this increment_year function extrapolates all DATA variables to
     # the next year so this step takes the calculator to the start_year
     if calculator_start_year > TC_LAST_YEAR:
         raise RuntimeError("Start year is beyond data extrapolation.")
@@ -116,34 +110,24 @@ def get_data(baseline=False, start_year=DEFAULT_START_YEAR, reform={},
                            calculator_start_year=start_year,
                            reform=reform, data=data)
 
-    # running marginal tax rate function for wage and salaries of
-    # primary three results returned for fica tax, iit tax, and combined
-    # mtr_iit: marginal tax rate of individual income tax
-    [mtr_fica, mtr_iit, mtr_combined] = calc1.mtr('e00200p')
-
-    # the sum of the two e-variables here are self-employed income
-    [mtr_fica_sey, mtr_iit_sey, mtr_combined_sey] = calc1.mtr('e00900p')
-
-    # find mtr on capital income
-    mtr_combined_capinc = cap_inc_mtr(calc1)
+    ### Put MTR calculations here...
 
     # create a temporary array to save all variables we need
-    length = len(calc1.array('s006'))
+    length = len(calc1.array('weight'))
     temp = np.empty((length, 11))
     # Put values of variables in temp array
-    # most e-variable definition can be found here
-    # https://docs.google.com/spreadsheets/d/1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit#gid=1029315862
-    temp[:, 0] = mtr_combined
-    temp[:, 1] = mtr_combined_sey
-    temp[:, 2] = mtr_combined_capinc
-    temp[:, 3] = calc1.array('age_head')
-    temp[:, 4] = calc1.array('e00200')
-    temp[:, 5] = calc1.array('sey')
-    temp[:, 6] = calc1.array('sey') + calc1.array('e00200')
-    temp[:, 7] = calc1.array('expanded_income')
-    temp[:, 8] = calc1.array('combined')
+    temp[:, 0] = 0  # mtr_combined
+    temp[:, 1] = 0  # mtr_combined_sey
+    temp[:, 2] = 0  # mtr_combined_capinc
+    temp[:, 3] = calc1.array('AGEGRP')
+    temp[:, 4] = calc1.array('SALARIES')
+    temp[:, 5] = calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
+    temp[:, 6] = (calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS') +
+                  calc1.array('SALARIES'))
+    temp[:, 7] = calc1.array('GTI')
+    temp[:, 8] = calc1.array('pitax')
     temp[:, 9] = calc1.current_year * np.ones(length)
-    temp[:, 10] = calc1.array('s006')
+    temp[:, 10] = calc1.array('weight')
 
     # dictionary of data frames to return
     micro_data_dict = {}
@@ -182,8 +166,8 @@ def get_data(baseline=False, start_year=DEFAULT_START_YEAR, reform={},
     pickle.dump(micro_data_dict, open(pkl_path, "wb"))
 
     # Do some garbage collection
-    del (calc1, temp, mtr_fica, mtr_iit, mtr_combined, mtr_fica_sey,
-         mtr_iit_sey, mtr_combined_sey, mtr_combined_capinc)
+    # del (calc1, temp, mtr_fica, mtr_iit, mtr_combined, mtr_fica_sey,
+    #      mtr_iit_sey, mtr_combined_sey, mtr_combined_capinc)
 
     taxcalc_version = pkg_resources.get_distribution("taxcalc").version
     return micro_data_dict, taxcalc_version
@@ -205,24 +189,25 @@ def taxcalc_advance(calc1, year, length):
     '''
     calc1.advance_to_year(year)
     print('year: ', str(calc1.current_year))
-    [mtr_fica, mtr_iit, mtr_combined] = calc1.mtr('e00200p')
-    [mtr_fica_sey, mtr_iit_sey, mtr_combined_sey] =\
-        calc1.mtr('e00900p')
+    # [mtr_fica, mtr_iit, mtr_combined] = calc1.mtr('e00200p')
+    # [mtr_fica_sey, mtr_iit_sey, mtr_combined_sey] =\
+    #     calc1.mtr('e00900p')
     # find mtr on capital income
-    mtr_combined_capinc = cap_inc_mtr(calc1)
+    # mtr_combined_capinc = cap_inc_mtr(calc1)
 
     temp = np.empty((length, 11))
-    temp[:, 0] = mtr_combined
-    temp[:, 1] = mtr_combined_sey
-    temp[:, 2] = mtr_combined_capinc
-    temp[:, 3] = calc1.array('age_head')
-    temp[:, 4] = calc1.array('e00200')
-    temp[:, 5] = calc1.array('sey')
-    temp[:, 6] = calc1.array('sey') + calc1.array('e00200')
-    temp[:, 7] = calc1.array('expanded_income')
-    temp[:, 8] = calc1.array('combined')
+    temp[:, 0] = 0  # mtr_combined
+    temp[:, 1] = 0  # mtr_combined_sey
+    temp[:, 2] = 0  # mtr_combined_capinc
+    temp[:, 3] = calc1.array('AGEGRP')
+    temp[:, 4] = calc1.array('SALARIES')
+    temp[:, 5] = calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
+    temp[:, 6] = (calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS') +
+                  calc1.array('SALARIES'))
+    temp[:, 7] = calc1.array('GTI')
+    temp[:, 8] = calc1.array('pitax')
     temp[:, 9] = calc1.current_year * np.ones(length)
-    temp[:, 10] = calc1.array('s006')
+    temp[:, 10] = calc1.array('weight')
 
     return temp
 
@@ -245,7 +230,7 @@ def cap_inc_mtr(calc1):
         'e00300', 'e00400', 'e00600', 'e00650', 'e01400', 'e01700',
         'p22250', 'p23250', 'e26270')
 
-    # PUF does not have variable for non-taxable IRA distributions
+    # DATA does not have variable for non-taxable IRA distributions
     capital_income_sources = (
         'e00300', 'e00400', 'e00600', 'e00650', 'e01400', 'e01700',
         'p22250', 'p23250', 'e26270')
