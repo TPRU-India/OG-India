@@ -23,6 +23,7 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from mpl_toolkits.mplot3d import Axes3D
 from ogindia import get_micro_data
 from ogindia.utils import DEFAULT_START_YEAR
+matplotlib.use('agg')
 
 TAX_ESTIMATE_PATH = os.environ.get("TAX_ESTIMATE_PATH", ".")
 MIN_OBS = 100
@@ -1297,11 +1298,13 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
             mtryparam_arr, mtry_wsumsq_arr, mtry_obs_arr)
 
 
-def tax_func_estimate(
-    BW, S, starting_age, ending_age, start_year=DEFAULT_START_YEAR,
-    baseline=True, analytical_mtrs=False, tax_func_type='DEP',
-    age_specific=False, reform={}, data=None, client=None,
-    num_workers=1, desc_data=False, graph_data=False, graph_est=False):
+def tax_func_estimate(BW, S, starting_age, ending_age,
+                      start_year=DEFAULT_START_YEAR,
+                      baseline=True, analytical_mtrs=False,
+                      tax_func_type='DEP', age_specific=False,
+                      reform={}, data=None, client=None, num_workers=1,
+                      desc_data=False, graph_data=False,
+                      graph_est=False):
     '''
     This function performs analysis on the source data from Tax-
     Calculator and estimates functions for the effective tax rate (ETR),
