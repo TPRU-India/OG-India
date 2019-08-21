@@ -121,8 +121,8 @@ def gen_3Dscatters_hist(df, s, t, output_dir):
     ax.set_xlabel('Total labor income')
     ax.set_ylabel('Total capital income')
     ax.set_zlabel('Marginal Tax Rate, Labor Inc.)')
-    plt.title("MTR labor income Income, Lab. Inc., and Cap. Inc., Age="
-              + str(s) + ", Year=" + str(t))
+    plt.title('MTR labor income Income, Lab. Inc., and Cap. Inc., ' +
+              'Age=' + str(s) + ', Year=' + str(t))
     filename = ("MTRx_Age_" + str(s) + "_Year_" + str(t) + "_data.png")
     fullpath = os.path.join(output_dir, filename)
     fig.savefig(fullpath, bbox_inches='tight')
