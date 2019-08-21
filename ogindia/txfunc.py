@@ -18,6 +18,7 @@ from dask import compute, delayed
 import dask.multiprocessing
 import pickle
 import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from mpl_toolkits.mplot3d import Axes3D
@@ -1049,7 +1050,7 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
         if age_specific:
             print("year=", t, "Age=", s)
             df = data[data['Age'] == s]
-            PopPct_age[s-min_age] = \
+            PopPct_age[s - min_age] = \
                 df['Weights'].sum() / TotPop_yr
 
         else:
@@ -1364,7 +1365,7 @@ def tax_func_estimate(
     AvgMTRx = np.zeros(BW)
     AvgMTRy = np.zeros(BW)
     TotPop_yr = np.zeros(BW)
-    PopPct_age = np.zeros((s_max-s_min+1, BW))
+    PopPct_age = np.zeros((s_max - s_min + 1, BW))
 
     # '''
     # --------------------------------------------------------------------
@@ -1380,7 +1381,7 @@ def tax_func_estimate(
     # '''
     start_time = time.time()
     cur_path = os.path.split(os.path.abspath(__file__))[0]
-    output_dir = os.path.join(cur_path, "OUTPUT", "TaxFunctions")
+    output_dir = os.path.join(cur_path, 'OUTPUT', 'TaxFunctions')
     if not os.access(output_dir, os.F_OK):
         os.makedirs(output_dir)
 
