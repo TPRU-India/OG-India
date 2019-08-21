@@ -18,13 +18,12 @@ from dask import compute, delayed
 import dask.multiprocessing
 import pickle
 import matplotlib
-matplotlib.use('agg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from mpl_toolkits.mplot3d import Axes3D
 from ogindia import get_micro_data
 from ogindia.utils import DEFAULT_START_YEAR
-matplotlib.use('agg')
 
 TAX_ESTIMATE_PATH = os.environ.get("TAX_ESTIMATE_PATH", ".")
 MIN_OBS = 100
@@ -450,6 +449,7 @@ def find_outliers(sse_mat, age_vec, se_mult, start_year, varstr,
         graphname = "SSE_" + varstr
         output_path = os.path.join(output_dir, graphname)
         plt.savefig(output_path)
+        plt.close()
     if sse_big_mat.sum() > 0:
         # Mark the outliers from the first sweep above. Then mark the
         # new outliers in a second sweep
@@ -497,6 +497,7 @@ def find_outliers(sse_mat, age_vec, se_mult, start_year, varstr,
             graphname = "SSE_" + varstr + "_NoOut1"
             output_path = os.path.join(output_dir, graphname)
             plt.savefig(output_path)
+            plt.close()
         if (sse_mat_new > thresh2).sum() > 0:
             # Mark the outliers from the second sweep above
             sse_mat_new2 = sse_mat_new.copy()
@@ -539,6 +540,7 @@ def find_outliers(sse_mat, age_vec, se_mult, start_year, varstr,
                 graphname = "SSE_" + varstr + "_NoOut2"
                 output_path = os.path.join(output_dir, graphname)
                 plt.savefig(output_path)
+                plt.close()
 
     return sse_big_mat
 
