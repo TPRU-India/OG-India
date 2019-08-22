@@ -1030,14 +1030,13 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
     # drop all obs with MTR on capital income > MAX_MTR
     data.drop(data[data['MTR capital income'] > MAX_MTR].index,
               inplace=True)
-    # drop all obs with MTR on capital income < -MIN_MTR
-    data.drop(data[data['MTR capital income'] < -MIN_MTR].index,
+    # drop all obs with MTR on capital income < MIN_MTR
+    data.drop(data[data['MTR capital income'] < MIN_MTR].index,
               inplace=True)
     # drop all obs with MTR on labor income > MAX_MTR
     data.drop(data[data['MTR labor income'] > MAX_MTR].index, inplace=True)
     # drop all obs with MTR on labor income < MIN_MTR
     data.drop(data[data['MTR labor income'] < MIN_MTR].index, inplace=True)
-
     # Create an array of the different ages in the data
     min_age = int(np.maximum(data['Age'].min(), s_min))
     max_age = int(np.minimum(data['Age'].max(), s_max))
