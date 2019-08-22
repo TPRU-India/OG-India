@@ -25,8 +25,10 @@ def get_fert(totpers, min_yr, max_yr, graph=False):
     '''
     This function generates a vector of fertility rates by model period
     age that corresponds to the fertility rate data by age in years
-    (Source: Office of the Registrar General & Census Commissioner:
-    http://www.censusindia.gov.in/2011census/population_enumeration.html)
+    (Source: Office of the Registrar General & Census Commissioner: See
+    Statement [Table] 19 of
+    http://www.censusindia.gov.in/vital_statistics/SRS_Report_2016/
+    7.Chap_3-Fertility_Indicators-2016.pdf)
 
     Args:
         totpers (int): total number of agent life periods (E+S), >= 3
@@ -34,6 +36,10 @@ def get_fert(totpers, min_yr, max_yr, graph=False):
         max_yr (int): age in years at which agents die with certainty,
             >= 4
         graph (bool): =True if want graphical output
+
+    Variable in function:
+        fert_data (NumPy array): births per 1000 females divided by 2000
+            to include men
 
     Returns:
         fert_rates (Numpy array): fertility rates for each model period
@@ -46,14 +52,15 @@ def get_fert(totpers, min_yr, max_yr, graph=False):
     pop_file = utils.read_file(cur_path,
                                "data/demographic/india_pop_data.csv")
     pop_data = pd.read_table(pop_file, sep=',')
-    pop_data_samp = pop_data[(pop_data['Age']>=min_yr-1) &
-                             (pop_data['Age']<=max_yr-1)]
+    pop_data_samp = pop_data[(pop_data['Age'] >= min_yr - 1) &
+                             (pop_data['Age'] <= max_yr - 1)]
     age_year_all = pop_data_samp['Age'] + 1
     curr_pop = np.array(pop_data_samp['2011'], dtype='f')
     curr_pop_pct = curr_pop / curr_pop.sum()
     # Get fertility rate by age-bin data
-    fert_data = np.array([28.1, 194.3, 149.7, 63.9, 22, 7.4, 2]) / 1000
-    age_midp = np.array([17, 22, 27, 32, 37, 42, 47])
+    fert_data = np.array([0.0, 1.0, 3.0, 10.7, 135.4, 166.0, 91.7, 32.7,
+                          11.3, 4.1, 1.0, 0.0]) / 2000
+    age_midp = np.array([9, 12, 15, 17, 22, 27, 32, 37, 42, 47, 52, 57])
     # Generate interpolation functions for fertility rates
     fert_func = si.interp1d(age_midp, fert_data, kind='cubic')
     # Calculate average fertility rate in each age bin using trapezoid
@@ -109,10 +116,13 @@ def get_fert(totpers, min_yr, max_yr, graph=False):
                                                totpers))
 
         fig, ax = plt.subplots()
-        plt.scatter(age_midp, fert_data, s=70, c='blue', marker='o',
-                    label='Data')
+        plt.scatter(age_midp[3:-2], fert_data[3:-2], s=100, c='blue',
+                    marker='o', label='Data')
+        plt.scatter(np.append(age_midp[:3], age_midp[-2:]),
+                    np.append(fert_data[:3], fert_data[-2:]), s=100,
+                    c='green', marker='o', label='Non-Data for fitting')
         plt.scatter(age_mid_new, fert_rates, s=40, c='red', marker='d',
-                    label='Model period (integrated)')
+                    label='Model period (interpolated)')
         plt.plot(age_fine, fert_fine, label='Cubic spline')
         # for the minor ticks, use no labels; default NullFormatter
         minorLocator = MultipleLocator(1)
@@ -122,18 +132,19 @@ def get_fert(totpers, min_yr, max_yr, graph=False):
         #     fontsize=20)
         plt.xlabel(r'Age $s$')
         plt.ylabel(r'Fertility rate $f_{s}$')
-        plt.xlim((min_yr-1, max_yr+1))
+        plt.xlim((min_yr - 1, max_yr + 1))
         plt.ylim((-0.15 * (fert_fine_pred.max()),
                   1.15 * (fert_fine_pred.max())))
         plt.legend(loc='upper right')
-        plt.text(-5, -0.018,
-            "Source:  Office of the Registrar General & Census Commissioner, 2011 Census",
-            fontsize=9)
+        plt.text(-13, -0.035,
+                 "Source:  Census of India, 2016, Chapter 3, " +
+                 "Estimates of Fertility Indicators, Statement 20",
+                 fontsize=9)
         plt.tight_layout(rect=(0, 0.03, 1, 1))
         # Create directory if OUTPUT directory does not already exist
         output_fldr = "OUTPUT/Demographics"
         output_dir = os.path.join(cur_path, output_fldr)
-        if os.access(output_dir, os.F_OK) == False:
+        if not os.access(output_dir, os.F_OK):
             os.makedirs(output_dir)
         output_path = os.path.join(output_dir, "fert_rates")
         plt.savefig(output_path)
@@ -141,129 +152,129 @@ def get_fert(totpers, min_yr, max_yr, graph=False):
     return fert_rates
 
 
-def get_mort_bins(totpers, min_yr, max_yr, graph=False):
-    '''
-    This function generates a vector of mortality rates by model period
-    age.
-    (Source: data.in.gov
-    estagespdeathsex2006-2011.csv)
+# def get_mort_bins(totpers, min_yr, max_yr, graph=False):
+#     '''
+#     This function generates a vector of mortality rates by model period
+#     age.
+#     (Source: data.in.gov
+#     estagespdeathsex2006-2011.csv)
 
-    Args:
-        totpers (int): total number of agent life periods (E+S), >= 3
-        min_yr (int): age in years at which agents are born, >= 0
-        max_yr (int): age in years at which agents die with certainty,
-            >= 4
-        graph (bool): =True if want graphical output
+#     Args:
+#         totpers (int): total number of agent life periods (E+S), >= 3
+#         min_yr (int): age in years at which agents are born, >= 0
+#         max_yr (int): age in years at which agents die with certainty,
+#             >= 4
+#         graph (bool): =True if want graphical output
 
-    Returns:
-        fert_rates (Numpy array): fertility rates for each model period
-            of life
+#     Returns:
+#         fert_rates (Numpy array): fertility rates for each model period
+#             of life
 
-    '''
-    # Get current population data (2011) for weighting
-    cur_path = os.path.split(os.path.abspath(__file__))[0]
-    pop_file = utils.read_file(
-        cur_path, 'data/demographic/india_pop_data.csv')
-    pop_data = pd.read_csv(pop_file, sep=',', thousands=',')
-    pop_data_samp = pop_data[(pop_data['Age'] >= min_yr - 1) &
-                             (pop_data['Age'] <= max_yr - 1)]
-    curr_pop = np.array(pop_data_samp['2011'], dtype='f')
-    curr_pop_pct = curr_pop / curr_pop.sum()
-    # Get fertility rate by age-bin data
-    # Currently just pulling values for one education level
-    # need to get weighted avg across all education levels
-    infmort_rate = 48.2 / 1000  # not 100% sure if per 1000 individuals
-    mort_data = (np.array([2.9, 1, 0.7, 1.3, 1.6, 1.8, 2.3, 2.7, 4, 5.5,
-                           8.3, 12.2, 20.1, 33.2, 49.9, 73.6, 104.8,
-                           167.6]) / 1000)
-    # Mid points of age bins
-    age_midp = np.array([2.5, 6.5, 12, 17, 22, 27, 32, 37, 42, 47, 52,
-                         57, 62, 67, 72, 77, 82, 100])
-    # Generate interpolation functions for mortality rates
-    mort_func = si.interp1d(age_midp, mort_data, kind='cubic')
-    # Calculate average mortality rate in each age bin using trapezoid
-    # method with a large number of points in each bin.
-    binsize = (max_yr - min_yr + 1) / totpers
-    num_sub_bins = float(10000)
-    len_subbins = (np.float64(100 * num_sub_bins)) / totpers
-    age_sub = (np.linspace(np.float64(binsize) / num_sub_bins,
-                           np.float64(max_yr),
-                           int(num_sub_bins * max_yr)) - 0.5 *
-               np.float64(binsize) / num_sub_bins)
-    curr_pop_sub = np.repeat(np.float64(curr_pop_pct) / num_sub_bins,
-                             num_sub_bins)
-    mort_rates_sub = np.zeros(curr_pop_sub.shape)
-    pred_ind = (age_sub > age_midp[0]) * (age_sub < age_midp[-1])
-    age_pred = age_sub[pred_ind]
-    mort_rates_sub[pred_ind] = np.float64(mort_func(age_pred))
-    mort_rates = np.zeros(totpers)
-    end_sub_bin = 0
-    for i in range(totpers):
-        beg_sub_bin = int(end_sub_bin)
-        end_sub_bin = int(np.rint((i + 1) * len_subbins))
-        mort_rates[i] = ((
-            curr_pop_sub[beg_sub_bin:end_sub_bin] *
-            mort_rates_sub[beg_sub_bin:end_sub_bin]).sum() /
-            curr_pop_sub[beg_sub_bin:end_sub_bin].sum())
-    mort_rates[-1] = 1  # Mortality rate in last period is set to 1
+#     '''
+#     # Get current population data (2011) for weighting
+#     cur_path = os.path.split(os.path.abspath(__file__))[0]
+#     pop_file = utils.read_file(
+#         cur_path, 'data/demographic/india_pop_data.csv')
+#     pop_data = pd.read_csv(pop_file, sep=',', thousands=',')
+#     pop_data_samp = pop_data[(pop_data['Age'] >= min_yr - 1) &
+#                              (pop_data['Age'] <= max_yr - 1)]
+#     curr_pop = np.array(pop_data_samp['2011'], dtype='f')
+#     curr_pop_pct = curr_pop / curr_pop.sum()
+#     # Get fertility rate by age-bin data
+#     # Currently just pulling values for one education level
+#     # need to get weighted avg across all education levels
+#     infmort_rate = 48.2 / 1000  # not 100% sure if per 1000 individuals
+#     mort_data = (np.array([2.9, 1, 0.7, 1.3, 1.6, 1.8, 2.3, 2.7, 4, 5.5,
+#                            8.3, 12.2, 20.1, 33.2, 49.9, 73.6, 104.8,
+#                            167.6]) / 1000)
+#     # Mid points of age bins
+#     age_midp = np.array([2.5, 6.5, 12, 17, 22, 27, 32, 37, 42, 47, 52,
+#                          57, 62, 67, 72, 77, 82, 100])
+#     # Generate interpolation functions for mortality rates
+#     mort_func = si.interp1d(age_midp, mort_data, kind='cubic')
+#     # Calculate average mortality rate in each age bin using trapezoid
+#     # method with a large number of points in each bin.
+#     binsize = (max_yr - min_yr + 1) / totpers
+#     num_sub_bins = float(10000)
+#     len_subbins = (np.float64(100 * num_sub_bins)) / totpers
+#     age_sub = (np.linspace(np.float64(binsize) / num_sub_bins,
+#                            np.float64(max_yr),
+#                            int(num_sub_bins * max_yr)) - 0.5 *
+#                np.float64(binsize) / num_sub_bins)
+#     curr_pop_sub = np.repeat(np.float64(curr_pop_pct) / num_sub_bins,
+#                              num_sub_bins)
+#     mort_rates_sub = np.zeros(curr_pop_sub.shape)
+#     pred_ind = (age_sub > age_midp[0]) * (age_sub < age_midp[-1])
+#     age_pred = age_sub[pred_ind]
+#     mort_rates_sub[pred_ind] = np.float64(mort_func(age_pred))
+#     mort_rates = np.zeros(totpers)
+#     end_sub_bin = 0
+#     for i in range(totpers):
+#         beg_sub_bin = int(end_sub_bin)
+#         end_sub_bin = int(np.rint((i + 1) * len_subbins))
+#         mort_rates[i] = ((
+#             curr_pop_sub[beg_sub_bin:end_sub_bin] *
+#             mort_rates_sub[beg_sub_bin:end_sub_bin]).sum() /
+#             curr_pop_sub[beg_sub_bin:end_sub_bin].sum())
+#     mort_rates[-1] = 1  # Mortality rate in last period is set to 1
 
-    if graph:
-        '''
-        ----------------------------------------------------------------
-        age_fine_pred  = (300,) vector, equally spaced support of ages
-                         between the minimum and maximum interpolating
-                         ages
-        mort_fine_pred = (300,) vector, interpolated mortality rates
-                         based on age_fine_pred
-        age_fine       = (300+some,) vector of ages including leading
-                         and trailing zeros
-        mort_fine      = (300+some,) vector of mortality rates including
-                         leading and trailing zeros
-        age_mid_new    = (totpers,) vector, midpoint age of each model
-                         period age bin
-        output_fldr    = string, folder in current path to save files
-        output_dir     = string, total path of OUTPUT folder
-        output_path    = string, path of file name of figure to be saved
-        ----------------------------------------------------------------
-        '''
-        # Generate finer age vector and mortality rate vector for
-        # graphing cubic spline interpolating function
-        age_fine_pred = np.linspace(age_midp[0], age_midp[-1], 300)
-        mort_fine_pred = mort_func(age_fine_pred)
-        age_fine = np.hstack((min_yr, age_fine_pred, max_yr))
-        mort_fine = np.hstack((0, mort_fine_pred, 0))
-        age_mid_new = (np.linspace(np.float(max_yr) / totpers, max_yr,
-                                   totpers) - (0.5 * np.float(max_yr) /
-                                               totpers))
+#     if graph:
+#         '''
+#         ----------------------------------------------------------------
+#         age_fine_pred  = (300,) vector, equally spaced support of ages
+#                          between the minimum and maximum interpolating
+#                          ages
+#         mort_fine_pred = (300,) vector, interpolated mortality rates
+#                          based on age_fine_pred
+#         age_fine       = (300+some,) vector of ages including leading
+#                          and trailing zeros
+#         mort_fine      = (300+some,) vector of mortality rates including
+#                          leading and trailing zeros
+#         age_mid_new    = (totpers,) vector, midpoint age of each model
+#                          period age bin
+#         output_fldr    = string, folder in current path to save files
+#         output_dir     = string, total path of OUTPUT folder
+#         output_path    = string, path of file name of figure to be saved
+#         ----------------------------------------------------------------
+#         '''
+#         # Generate finer age vector and mortality rate vector for
+#         # graphing cubic spline interpolating function
+#         age_fine_pred = np.linspace(age_midp[0], age_midp[-1], 300)
+#         mort_fine_pred = mort_func(age_fine_pred)
+#         age_fine = np.hstack((min_yr, age_fine_pred, max_yr))
+#         mort_fine = np.hstack((0, mort_fine_pred, 0))
+#         age_mid_new = (np.linspace(np.float(max_yr) / totpers, max_yr,
+#                                    totpers) - (0.5 * np.float(max_yr) /
+#                                                totpers))
 
-        fig, ax = plt.subplots()
-        plt.scatter(age_midp, mort_data, s=70, c='blue', marker='o',
-                    label='Data')
-        plt.scatter(age_mid_new, mort_rates, s=40, c='red', marker='d',
-                    label='Model period (integrated)')
-        plt.plot(age_fine, mort_fine, label='Cubic spline')
-        # for the minor ticks, use no labels; default NullFormatter
-        minorLocator = MultipleLocator(1)
-        ax.xaxis.set_minor_locator(minorLocator)
-        plt.grid(b=True, which='major', color='0.65', linestyle='-')
-        # plt.title('Fitted fertility rate function by age ($f_{s}$)',
-        #     fontsize=20)
-        plt.xlabel(r'Age $s$')
-        plt.ylabel(r'Mortality rate $\rho_{s}$')
-        plt.xlim((min_yr - 1, max_yr + 1))
-        plt.ylim((-0.15 * (mort_fine_pred.max()),
-                  1.15 * (mort_fine_pred.max())))
-        plt.legend(loc='upper right')
-        plt.text(-5, -0.018, 'Source: data.gov.in', fontsize=9)
-        plt.tight_layout(rect=(0, 0.03, 1, 1))
-        # Create directory if OUTPUT directory does not already exist
-        output_dir = os.path.join(cur_path, 'OUTPUT', 'Demographics')
-        if os.access(output_dir, os.F_OK) is False:
-            os.makedirs(output_dir)
-        output_path = os.path.join(output_dir, 'mort_rates')
-        plt.savefig(output_path)
+#         fig, ax = plt.subplots()
+#         plt.scatter(age_midp, mort_data, s=70, c='blue', marker='o',
+#                     label='Data')
+#         plt.scatter(age_mid_new, mort_rates, s=40, c='red', marker='d',
+#                     label='Model period (integrated)')
+#         plt.plot(age_fine, mort_fine, label='Cubic spline')
+#         # for the minor ticks, use no labels; default NullFormatter
+#         minorLocator = MultipleLocator(1)
+#         ax.xaxis.set_minor_locator(minorLocator)
+#         plt.grid(b=True, which='major', color='0.65', linestyle='-')
+#         # plt.title('Fitted fertility rate function by age ($f_{s}$)',
+#         #     fontsize=20)
+#         plt.xlabel(r'Age $s$')
+#         plt.ylabel(r'Mortality rate $\rho_{s}$')
+#         plt.xlim((min_yr - 1, max_yr + 1))
+#         plt.ylim((-0.15 * (mort_fine_pred.max()),
+#                   1.15 * (mort_fine_pred.max())))
+#         plt.legend(loc='upper right')
+#         plt.text(-5, -0.018, 'Source: data.gov.in', fontsize=9)
+#         plt.tight_layout(rect=(0, 0.03, 1, 1))
+#         # Create directory if OUTPUT directory does not already exist
+#         output_dir = os.path.join(cur_path, 'OUTPUT', 'Demographics')
+#         if os.access(output_dir, os.F_OK) is False:
+#             os.makedirs(output_dir)
+#         output_path = os.path.join(output_dir, 'mort_rates')
+#         plt.savefig(output_path)
 
-    return mort_rates, infmort_rate
+#     return mort_rates, infmort_rate
 
 
 def get_mort(totpers, min_yr, max_yr, graph=False):
@@ -290,10 +301,10 @@ def get_mort(totpers, min_yr, max_yr, graph=False):
     cur_path = os.path.split(os.path.abspath(__file__))[0]
     # Get current population data (2011) for weighting
     pop_file = utils.read_file(cur_path,
-                               "data/demographic/india_pop_data.csv")
+                               'data/demographic/india_pop_data.csv')
     pop_data = pd.read_table(pop_file, sep=',')
-    pop_data_samp = pop_data[(pop_data['Age']>=min_yr-1) &
-                             (pop_data['Age']<=max_yr-1)]
+    pop_data_samp = pop_data[(pop_data['Age'] >= min_yr - 1) &
+                             (pop_data['Age'] <= max_yr - 1)]
     age_year_all = pop_data_samp['Age'] + 1
     curr_pop = np.array(pop_data_samp['2011'], dtype='f')
     curr_pop_pct = curr_pop / curr_pop.sum()
@@ -345,14 +356,15 @@ def get_mort(totpers, min_yr, max_yr, graph=False):
                                    totpers) - (0.5 * np.float(max_yr) /
                                                totpers))
         fig, ax = plt.subplots()
-        # plt.scatter(np.hstack([0, age_year_all]),
-        #             np.hstack([infmort_rate, mort_rates_all]),
-        #             s=20, c='blue', marker='o', label='Data')
+        plt.scatter(np.hstack([0, age_midp]),
+                    np.hstack([infmort_rate, mort_data]),
+                    s=100, c='blue', marker='o', label='Data')
         plt.scatter(np.hstack([0, age_mid_new]),
                     np.hstack([infmort_rate, mort_rates]),
                     s=40, c='red', marker='d',
-                    label='Model period')
-        plt.axvline(x=max_yr, color='red', linestyle='-', linewidth=1)
+                    label='Model period (interpolated)')
+        plt.axvline(x=max_yr, color='black', linestyle='-',
+                    linewidth=1)
         # for the minor ticks, use no labels; default NullFormatter
         minorLocator = MultipleLocator(1)
         ax.xaxis.set_minor_locator(minorLocator)
@@ -361,12 +373,12 @@ def get_mort(totpers, min_yr, max_yr, graph=False):
         #     fontsize=20)
         plt.xlabel(r'Age $s$')
         plt.ylabel(r'Mortality rate $\rho_{s}$')
-        plt.xlim((min_yr - 2, age_year_all.max()+2))
+        plt.xlim((min_yr - 2, age_year_all.max() + 2))
         plt.ylim((-0.05, 1.05))
         plt.legend(loc='upper left')
-        plt.text(-5, -0.2,
-            "Source: Ministry of Health and Family Welfare Department of Health and Family Welfare",
-            fontsize=9)
+        plt.text(-13, -0.30, "Source: Ministry of Health and Family " +
+                 "Welfare, Department of Health and Family Welfare",
+                 fontsize=9)
         plt.tight_layout(rect=(0, 0.03, 1, 1))
         # Create directory if OUTPUT directory does not already exist
         output_fldr = "OUTPUT/Demographics"
