@@ -1023,20 +1023,20 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
     # drop all obs with ETR < MIN_ETR
     data.drop(data[data['ETR'] < MIN_ETR].index, inplace=True)
     # drop all obs with ATI, TLI, TCincome < MIN_INCOME
-    # data.drop(data[(data['Adjusted total income'] < MIN_INCOME) |
-    #                (data['Total labor income'] < MIN_INCOME) |
-    #                (data['Total capital income'] < MIN_INCOME)].index,
-    #           inplace=True)
+    data.drop(data[(data['Adjusted total income'] < MIN_INCOME) |
+                   (data['Total labor income'] < MIN_INCOME) |
+                   (data['Total capital income'] < MIN_INCOME)].index,
+              inplace=True)
     # drop all obs with MTR on capital income > MAX_MTR
-    # data.drop(data[data['MTR capital income'] > MAX_MTR].index,
-    #           inplace=True)
-    # # drop all obs with MTR on capital income < -MIN_MTR
-    # data.drop(data[data['MTR capital income'] < -MIN_MTR].index,
-    #           inplace=True)
-    # # drop all obs with MTR on labor income > MAX_MTR
-    # data.drop(data[data['MTR labor income'] > MAX_MTR].index, inplace=True)
-    # # drop all obs with MTR on labor income < MIN_MTR
-    # data.drop(data[data['MTR labor income'] < MIN_MTR].index, inplace=True)
+    data.drop(data[data['MTR capital income'] > MAX_MTR].index,
+              inplace=True)
+    # drop all obs with MTR on capital income < -MIN_MTR
+    data.drop(data[data['MTR capital income'] < -MIN_MTR].index,
+              inplace=True)
+    # drop all obs with MTR on labor income > MAX_MTR
+    data.drop(data[data['MTR labor income'] > MAX_MTR].index, inplace=True)
+    # drop all obs with MTR on labor income < MIN_MTR
+    data.drop(data[data['MTR labor income'] < MIN_MTR].index, inplace=True)
 
     # Create an array of the different ages in the data
     min_age = int(np.maximum(data['Age'].min(), s_min))
@@ -1168,20 +1168,20 @@ def tax_func_loop(t, micro_data, start_year, s_min, s_max, age_specific,
 
             # Estimate marginal tax rate of labor income function
             # MTRx(x,y)
-            # (mtrxparams, mtrx_wsumsq_arr[s-s_min],
-            #     mtrx_obs_arr[s-s_min]) = \
-            #     txfunc_est(df_mtrx, s, t, 'mtrx', tax_func_type,
-            #                numparams, output_dir, graph_est)
-            # mtrxparam_arr[s-s_min, :] = mtrxparams
+            (mtrxparams, mtrx_wsumsq_arr[s-s_min],
+                mtrx_obs_arr[s-s_min]) = \
+                txfunc_est(df_mtrx, s, t, 'mtrx', tax_func_type,
+                           numparams, output_dir, graph_est)
+            mtrxparam_arr[s-s_min, :] = mtrxparams
             mtrxparam_arr[s-s_min, :] = mtrxparams = 0
-            # del df_mtrx
-            # # Estimate marginal tax rate of capital income function
-            # # MTRy(x,y)
-            # (mtryparams, mtry_wsumsq_arr[s-s_min],
-            #     mtry_obs_arr[s-s_min]) = \
-            #     txfunc_est(df_mtry, s, t, 'mtry', tax_func_type,
-            #                numparams, output_dir, graph_est)
-            # mtryparam_arr[s-s_min, :] = mtryparams
+            del df_mtrx
+            # Estimate marginal tax rate of capital income function
+            # MTRy(x,y)
+            (mtryparams, mtry_wsumsq_arr[s-s_min],
+                mtry_obs_arr[s-s_min]) = \
+                txfunc_est(df_mtry, s, t, 'mtry', tax_func_type,
+                           numparams, output_dir, graph_est)
+            mtryparam_arr[s-s_min, :] = mtryparams
             mtryparam_arr[s-s_min, :] = mtryparams = 0
             del df_mtry
 

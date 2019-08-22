@@ -189,16 +189,15 @@ def taxcalc_advance(calc1, year, length):
     '''
     calc1.advance_to_year(year)
     print('year: ', str(calc1.current_year))
-    # [mtr_fica, mtr_iit, mtr_combined] = calc1.mtr('e00200p')
-    # [mtr_fica_sey, mtr_iit_sey, mtr_combined_sey] =\
-    #     calc1.mtr('e00900p')
+    mtr_salary = calc1.mtr('SALARIES')
+    mtr_selfemp = calc1.mtr('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
     # find mtr on capital income
-    # mtr_combined_capinc = cap_inc_mtr(calc1)
+    mtr_capinc = cap_inc_mtr(calc1)
 
     temp = np.empty((length, 11))
-    temp[:, 0] = 0  # mtr_combined
-    temp[:, 1] = 0  # mtr_combined_sey
-    temp[:, 2] = 0  # mtr_combined_capinc
+    temp[:, 0] = mtr_salary
+    temp[:, 1] = mtr_selfemp
+    temp[:, 2] = mtr_capinc
     temp[:, 3] = calc1.array('AGEGRP')
     temp[:, 4] = calc1.array('SALARIES')
     temp[:, 5] = calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
@@ -227,13 +226,13 @@ def cap_inc_mtr(calc1):
 
     '''
     capital_income_sources_taxed = (
-        'e00300', 'e00400', 'e00600', 'e00650', 'e01400', 'e01700',
-        'p22250', 'p23250', 'e26270')
+        'ST_CG_AMT_1', 'ST_CG_AMT_2', 'ST_CG_AMT_APPRATE',
+        'LT_CG_AMT_1', 'LT_CG_AMT_2', 'INCOME_OS_NOT_RACEHORSE')
 
     # DATA does not have variable for non-taxable IRA distributions
     capital_income_sources = (
-        'e00300', 'e00400', 'e00600', 'e00650', 'e01400', 'e01700',
-        'p22250', 'p23250', 'e26270')
+        'ST_CG_AMT_1', 'ST_CG_AMT_2', 'ST_CG_AMT_APPRATE',
+        'LT_CG_AMT_1', 'LT_CG_AMT_2', 'INCOME_OS_NOT_RACEHORSE')
 
     # calculating MTRs separately - can skip items with zero tax
     all_mtrs = {income_source: calc1.mtr(income_source) for
@@ -242,18 +241,21 @@ def cap_inc_mtr(calc1):
     record_columns = [calc1.array(x) for x in capital_income_sources]
     # weighted average of all those MTRs
     total = (sum(map(abs, record_columns)) +
-             np.abs(calc1.array('e02000') - calc1.array('e26270')))
+             np.abs(calc1.array('SALARIES') - calc1.array(
+                 'PRFT_GAIN_BP_SPECLTV_BUS')))
     # Note that all_mtrs gives fica (0), iit (1), and combined (2) mtrs
     # We'll use the combined - hence all_mtrs[source][2]
     capital_mtr = [abs(col) * all_mtrs[source][2] for col, source in
                    zip(record_columns, capital_income_sources_taxed)]
     mtr_combined_capinc = np.zeros_like(total)
     mtr_combined_capinc[total != 0] = (
-        sum(capital_mtr + (calc1.mtr('e02000')[2] *
-                           np.abs(calc1.array('e02000') -
-                                  calc1.array('e26270'))))[total != 0] /
+        sum(capital_mtr + (
+            calc1.mtr('SALARIES')[2] * np.abs(
+                calc1.array('SALARIES') -
+                calc1.array('PRFT_GAIN_BP_SPECLTV_BUS'))))[total != 0] /
         total[total != 0])
     # no capital income taxpayers
     # give all the weight to interest income
-    mtr_combined_capinc[total == 0] = all_mtrs['e00300'][2][total == 0]
+    mtr_combined_capinc[total == 0] =\
+        all_mtrs['INCOME_OS_NOT_RACEHORSE'][total == 0]
     return mtr_combined_capinc
