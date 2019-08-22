@@ -45,7 +45,8 @@ def get_calculator(baseline, calculator_start_year, reform=None,
     '''
     # create a calculator
     policy1 = Policy()
-    records1 = Records()
+    records1 = Records(data='pitSmallData.csv',
+                       weights='pit_weightsSD.csv')
     grecs = GSTRecords()
     crecs = CorpRecords()
 
@@ -110,16 +111,20 @@ def get_data(baseline=False, start_year=DEFAULT_START_YEAR, reform={},
                            calculator_start_year=start_year,
                            reform=reform, data=data)
 
-    ### Put MTR calculations here...
-
     # create a temporary array to save all variables we need
     length = len(calc1.array('weight'))
+
+    # MTR calculations
+    mtr_salary = calc1.mtr('SALARIES')
+    mtr_selfemp = calc1.mtr('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
+    # find mtr on capital income
+    mtr_capinc = cap_inc_mtr(calc1)
+
     temp = np.empty((length, 11))
-    # Put values of variables in temp array
-    temp[:, 0] = 0  # mtr_combined
-    temp[:, 1] = 0  # mtr_combined_sey
-    temp[:, 2] = 0  # mtr_combined_capinc
-    temp[:, 3] = calc1.array('AGEGRP')
+    temp[:, 0] = mtr_salary
+    temp[:, 1] = mtr_selfemp
+    temp[:, 2] = mtr_capinc
+    temp[:, 3] = calc1.array('AGE')
     temp[:, 4] = calc1.array('SALARIES')
     temp[:, 5] = calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
     temp[:, 6] = (calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS') +
@@ -198,7 +203,7 @@ def taxcalc_advance(calc1, year, length):
     temp[:, 0] = mtr_salary
     temp[:, 1] = mtr_selfemp
     temp[:, 2] = mtr_capinc
-    temp[:, 3] = calc1.array('AGEGRP')
+    temp[:, 3] = calc1.array('AGE')
     temp[:, 4] = calc1.array('SALARIES')
     temp[:, 5] = calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS')
     temp[:, 6] = (calc1.array('PRFT_GAIN_BP_OTHR_SPECLTV_BUS') +
