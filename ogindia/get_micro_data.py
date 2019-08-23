@@ -45,8 +45,7 @@ def get_calculator(baseline, calculator_start_year, reform=None,
     '''
     # create a calculator
     policy1 = Policy()
-    records1 = Records(data='pitSmallData.csv',
-                       weights='pit_weightsSD.csv')
+    records1 = Records(data=data, weights=weights)
     grecs = GSTRecords()
     crecs = CorpRecords()
 
