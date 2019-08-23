@@ -27,7 +27,7 @@ def run_micro_macro(user_params):
     # 3) Increase the standard deduction from 40,000 to 100,000, starting in 2020
 
     # Specify direct tax refrom
-    dt_reform = {'_std_deduction': {'2020': [100000]}}
+    dt_reform = {2020: {'_std_deduction': [100000]}}
 
     # Set some model parameters
     # See parameters.py for description of these parameters
