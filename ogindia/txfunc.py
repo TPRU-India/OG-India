@@ -26,7 +26,7 @@ from ogindia import get_micro_data
 from ogindia.utils import DEFAULT_START_YEAR
 
 TAX_ESTIMATE_PATH = os.environ.get("TAX_ESTIMATE_PATH", ".")
-MIN_OBS = 100
+MIN_OBS = 240
 MIN_ETR = -0.15
 MAX_ETR = 0.65
 MIN_MTR = -0.45
