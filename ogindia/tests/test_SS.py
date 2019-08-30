@@ -22,6 +22,7 @@ p1 = Specifications()
 p1.eta = (p1.omega_SS.reshape(p1.S, 1) *
           p1.lambdas.reshape(1, p1.J)).reshape(1, p1.S, p1.J)
 p1.Z = np.ones(p1.T + p1.S) * Z
+p1.zeta_D = np.zeros(p1.T + p1.S)
 p1.tau_bq = np.ones(p1.T + p1.S) * 0.0
 p1.tau_payroll = np.ones(p1.T + p1.S) * tau_payroll
 p1.alpha_T = np.ones(p1.T + p1.S) * alpha_T
@@ -73,6 +74,7 @@ p2 = Specifications()
 p2.eta = (p2.omega_SS.reshape(p2.S, 1) *
           p2.lambdas.reshape(1, p2.J)).reshape(1, p2.S, p2.J)
 p2.Z = np.ones(p2.T + p2.S) * Z
+p2.zeta_D = np.zeros(p2.T + p2.S)
 p2.tau_bq = np.ones(p2.T + p2.S) * 0.0
 p2.tau_payroll = np.ones(p2.T + p2.S) * tau_payroll
 p2.alpha_T = np.ones(p2.T + p2.S) * alpha_T
@@ -126,6 +128,7 @@ p3 = Specifications()
 p3.eta = (p3.omega_SS.reshape(p3.S, 1) *
           p3.lambdas.reshape(1, p3.J)).reshape(1, p3.S, p3.J)
 p3.Z = np.ones(p3.T + p3.S) * Z
+p3.zeta_D = np.zeros(p3.T + p3.S)
 p3.tau_bq = np.ones(p3.T + p3.S) * 0.0
 p3.tau_payroll = np.ones(p3.T + p3.S) * tau_payroll
 p3.alpha_T = np.ones(p3.T + p3.S) * alpha_T
@@ -269,6 +272,7 @@ def test_inner_loop():
     p.eta = (p.omega_SS.reshape(p.S, 1) *
              p.lambdas.reshape(1, p.J)).reshape(1, p.S, p.J)
     p.Z = np.ones(p.T + p.S) * Z
+    p.zeta_D = np.zeros(p.T + p.S)
     p.tau_bq = np.ones(p.T + p.S) * 0.0
     p.tau_payroll = np.ones(p.T + p.S) * tau_payroll
     p.alpha_T = np.ones(p.T + p.S) * alpha_T
@@ -424,6 +428,7 @@ def test_run_SS(input_path, expected_path):
     p.eta = (p.omega_SS.reshape(p.S, 1) *
              p.lambdas.reshape(1, p.J)).reshape(1, p.S, p.J)
     p.Z = np.ones(p.T + p.S) * Z
+    p.zeta_D = np.zeros(p.T + p.S)
     p.tau_bq = np.ones(p.T + p.S) * 0.0
     p.tau_payroll = np.ones(p.T + p.S) * tau_payroll
     p.alpha_T = np.ones(p.T + p.S) * alpha_T
