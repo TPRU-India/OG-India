@@ -24,6 +24,9 @@ def test_firstdoughnutring():
      p_wealth, m_wealth, p.b_ellipse, p.upsilon, p.chi_b, p.chi_n,
      theta, p.baseline) = tpi_params
     p.Z = np.ones(p.T + p.S) * Z
+    p.zeta_D = np.zeros(p.T + p.S)
+    p.initial_foreign_debt_ratio = 0.0
+    p.initial_debt_ratio = 0.59
     p.tau_bq = np.ones(p.T + p.S) * 0.0
     p.tau_payroll = np.ones(p.T + p.S) * tau_payroll
     p.tau_b = np.ones(p.T + p.S) * tau_b
@@ -68,6 +71,9 @@ def test_twist_doughnut():
      p_wealth, m_wealth, p.b_ellipse, p.upsilon, p.chi_b, p.chi_n,
      theta, p.baseline) = tpi_params
     p.Z = np.ones(p.T + p.S) * Z
+    p.zeta_D = np.zeros(p.T + p.S)
+    p.initial_foreign_debt_ratio = 0.0
+    p.initial_debt_ratio = 0.59
     p.tau_bq = np.ones(p.T + p.S) * 0.0
     p.tau_c = np.ones((p.T + p.S, p.S, p.J)) * 0.0
     p.tau_payroll = np.ones(p.T + p.S) * tau_payroll
@@ -115,6 +121,9 @@ def test_inner_loop():
      theta, p.baseline) = tpi_params
     p.eta = p.omega.reshape(p.T + p.S, p.S, 1) * p.lambdas.reshape(1, p.J)
     p.Z = np.ones(p.T + p.S) * Z
+    p.zeta_D = np.zeros(p.T + p.S)
+    p.initial_foreign_debt_ratio = 0.0
+    p.initial_debt_ratio = 0.59
     p.tau_bq = np.ones(p.T + p.S) * 0.0
     p.tau_payroll = np.ones(p.T + p.S) * tau_payroll
     p.tau_b = np.ones(p.T + p.S) * tau_b
@@ -176,7 +185,6 @@ def test_run_TPI():
         'J': J,
         'S': S,
         'T': T,
-        # 'eta': (np.ones((S, J)) / (S * J)).tolist()
         'eta': (np.ones((S, J)) / (S * J))
     }
     # update parameters instance with new values for test
@@ -187,8 +195,12 @@ def test_run_TPI():
      p.imm_rates, p.e, retire, p.mean_income_data, factor, h_wealth,
      p_wealth, m_wealth, p.b_ellipse, p.upsilon, p.chi_b, p.chi_n,
      theta, p.baseline) = tpi_params
+    p.omega_SS = p.omega[-1, :]
     p.eta = p.omega.reshape(T + S, S, 1) * lambdas.reshape(1, J)
     p.Z = np.ones(p.T + p.S) * Z
+    p.zeta_D = np.zeros(p.T + p.S)
+    p.initial_foreign_debt_ratio = 0.0
+    p.initial_debt_ratio = 0.59
     p.tau_bq = np.ones(p.T + p.S) * 0.0
     p.tau_payroll = np.ones(p.T + p.S) * tau_payroll
     p.tau_b = np.ones(p.T + p.S) * tau_b
