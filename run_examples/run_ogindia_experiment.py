@@ -31,7 +31,9 @@ dt_reform = {2020: {'_std_deduction': [100000]}}
 # Set some model parameters
 # See parameters.py for description of these parameters
 OG_params = {'alpha_G': [0.112, 0.132, 0.132, 0.132, 0.112],  # specify policy from 2019 through 2023- assuming constant thereafter
-             'tau_b': [0.27, 0.25 * 0.27/0.34]}  # note the rate is the effective tax rate
+             'tau_b': [0.27, 0.25 * 0.27/0.34], # note the rate is the effective tax rate
+             'age_specific': False,  # don't estimate age specific tax functions
+             'tax_func_type': 'linear'}  # estimate linear marginal and effective tax rate functions
 
 '''
 ------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Run baseline policy first
 output_base = BASELINE_DIR
 kwargs = {'output_base': output_base, 'baseline_dir': BASELINE_DIR,
           'test': False, 'time_path': True, 'baseline': True,
+          'user_params': {'age_specific': False, 'tax_func_type': 'linear'},
           'guid': '_TPRU_19232019', 'run_micro': True,
           'data': 'pitSmallData.csv',
           'client': client, 'num_workers': num_workers}
