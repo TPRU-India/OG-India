@@ -35,3 +35,6 @@ envs/
 *.egg-info/
 */dask-worker-space/*
 *micro_data_*.pkl
+
+# Ignore Jupyter notebook utility files
+*.ipynb_checkpoints*
