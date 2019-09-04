@@ -3,7 +3,6 @@ import pytest
 import tempfile
 import pickle
 import numpy as np
-from ogindia.utils import CPS_START_YEAR
 from ogindia.utils import comp_array, comp_scalar, dict_compare
 from ogindia.get_micro_data import get_calculator
 from ogindia import SS, TPI, utils
@@ -18,7 +17,7 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 @pytest.yield_fixture
 def picklefile1():
     x = {'a': 1}
-    pfile = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    pfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     pickle.dump(x, open(pfile.name, 'wb'))
     pfile.close()
     # must close and then yield for Windows platform
@@ -30,7 +29,7 @@ def picklefile1():
 def picklefile2():
     y = {'a': 1, 'b': 2}
 
-    pfile = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    pfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     pickle.dump(y, open(pfile.name, 'wb'))
     pfile.close()
     # must close and then yield for Windows platform
@@ -41,7 +40,7 @@ def picklefile2():
 @pytest.yield_fixture
 def picklefile3():
     x = {'a': np.array([100., 200., 300.]), 'b': 2}
-    pfile = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    pfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     pickle.dump(x, open(pfile.name, 'wb'))
     pfile.close()
     # must close and then yield for Windows platform
@@ -52,7 +51,7 @@ def picklefile3():
 @pytest.yield_fixture
 def picklefile4():
     x = {'a': np.array([100., 200., 300.1]), 'b': 2}
-    pfile = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    pfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     pickle.dump(x, open(pfile.name, 'wb'))
     pfile.close()
     # must close and then yield for Windows platform
@@ -73,8 +72,8 @@ def test_run_small(time_path):
     TPI.ENFORCE_SOLUTION_CHECKS = False
     SS.MINIMIZER_TOL = 1e-6
     TPI.MINIMIZER_TOL = 1e-6
-    output_base = "./OUTPUT"
-    input_dir = "./OUTPUT"
+    output_base = './OUTPUT'
+    input_dir = './OUTPUT'
     user_params = {'frisch': 0.41, 'debt_ratio_ss': 0.4}
     runner(output_base=output_base, baseline_dir=input_dir, test=True,
            time_path=time_path, baseline=True, user_params=user_params,
@@ -92,15 +91,15 @@ def test_constant_demographics_TPI():
     iteration and the values all along the time path should equal their
     steady-state values.
     '''
-    output_base = "./OUTPUT"
-    baseline_dir = "./OUTPUT"
+    output_base = './OUTPUT'
+    baseline_dir = './OUTPUT'
     # Create output directory structure
-    ss_dir = os.path.join(output_base, "SS")
-    tpi_dir = os.path.join(output_base, "TPI")
+    ss_dir = os.path.join(output_base, 'SS')
+    tpi_dir = os.path.join(output_base, 'TPI')
     dirs = [ss_dir, tpi_dir]
     for _dir in dirs:
         try:
-            print("making dir: ", _dir)
+            print('making dir: ', _dir)
             os.makedirs(_dir)
         except OSError:
             pass
@@ -119,9 +118,9 @@ def test_constant_demographics_TPI():
     # Run SS
     ss_outputs = SS.run_SS(spec, None)
     # save SS results
-    utils.mkdirs(os.path.join(baseline_dir, "SS"))
-    ss_dir = os.path.join(baseline_dir, "SS/SS_vars.pkl")
-    pickle.dump(ss_outputs, open(ss_dir, "wb"))
+    utils.mkdirs(os.path.join(baseline_dir, 'SS'))
+    ss_dir = os.path.join(baseline_dir, 'SS', 'SS_vars.pkl')
+    pickle.dump(ss_outputs, open(ss_dir, 'wb'))
     # Run TPI
     tpi_output = TPI.run_TPI(spec, None)
     assert(np.allclose(tpi_output['bmat_splus1'][:spec.T, :, :],
@@ -153,36 +152,36 @@ def test_compare_dict_basic():
     from ogindia.utils import dict_compare
     lhs = {'a': 1, 'b': 2}
     rhs = {'c': 4, 'b': 2}
-    assert not dict_compare("lhs.pkle", lhs, "rhs.pkle", rhs, tol=TOL)
+    assert not dict_compare('lhs.pkle', lhs, 'rhs.pkle', rhs, tol=TOL)
 
 
 def test_compare_dict_more_lhs():
     from ogindia.utils import dict_compare
     lhs = {'a': 1, 'b': 2, 'c': 3}
     rhs = {'c': 4, 'b': 2}
-    assert not dict_compare("lhs.pkle", lhs, "rhs.pkle", rhs, tol=TOL)
+    assert not dict_compare('lhs.pkle', lhs, 'rhs.pkle', rhs, tol=TOL)
 
 
 def test_compare_dict_diff_ndarrays():
     from ogindia.utils import dict_compare
     lhs = {'a': np.array([1, 2, 3]), 'b': 2}
     rhs = {'a': np.array([1, 3]), 'b': 2}
-    assert not dict_compare("lhs.pkle", lhs, "rhs.pkle", rhs, tol=TOL)
+    assert not dict_compare('lhs.pkle', lhs, 'rhs.pkle', rhs, tol=TOL)
 
 
 def test_compare_dict_diff_ndarrays2():
     from ogindia.utils import dict_compare
     lhs = {'a': np.array([1., 2., 3.]), 'b': 2}
     rhs = {'a': np.array([1., 2., 3.1]), 'b': 2}
-    assert not dict_compare("lhs.pkle", lhs, "rhs.pkle", rhs, tol=TOL)
+    assert not dict_compare('lhs.pkle', lhs, 'rhs.pkle', rhs, tol=TOL)
 
 
 def test_comp_array_relative():
     x = np.array([100., 200., 300.])
     y = np.array([100.01, 200.02, 300.03])
     unequal = []
-    assert not comp_array("test", y, x, 1e-3, unequal)
-    assert comp_array("test", y, x, 1e-3, unequal, relative=True)
+    assert not comp_array('test', y, x, 1e-3, unequal)
+    assert comp_array('test', y, x, 1e-3, unequal, relative=True)
 
 
 def test_comp_array_relative_exception():
@@ -190,7 +189,7 @@ def test_comp_array_relative_exception():
     y = np.array([100.01, 200.02, 300.03])
     unequal = []
     exc = {'var': 1e-3}
-    assert comp_array("var", y, x, 1e-5, unequal,
+    assert comp_array('var', y, x, 1e-5, unequal,
                       exceptions=exc, relative=True)
 
 
@@ -198,39 +197,36 @@ def test_comp_scalar_relative():
     x = 100
     y = 100.01
     unequal = []
-    assert not comp_scalar("test", y, x, 1e-3, unequal)
-    assert comp_scalar("test", y, x, 1e-3, unequal, relative=True)
+    assert not comp_scalar('test', y, x, 1e-3, unequal)
+    assert comp_scalar('test', y, x, 1e-3, unequal, relative=True)
 
 
 def test_comp_scalar_relative_exception():
     x = 100
     y = 100.01
     unequal = []
-    exc = {"var": 1e-3}
-    assert comp_scalar("var", y, x, 1e-5, unequal,
+    exc = {'var': 1e-3}
+    assert comp_scalar('var', y, x, 1e-5, unequal,
                        exceptions=exc, relative=True)
 
 
 def test_compare_dict_diff_ndarrays_relative():
     lhs = {'a': np.array([100., 200., 300.]), 'b': 2}
     rhs = {'a': np.array([100., 200., 300.1]), 'b': 2}
-    assert dict_compare("lhs.pkle", lhs, "rhs.pkle",
+    assert dict_compare('lhs.pkle', lhs, 'rhs.pkle',
                         rhs, tol=1e-3, relative=True)
 
 
 def test_get_micro_data_get_calculator():
-    reform = {
-        'II_rt1': {2017: 0.09},
-        'II_rt2': {2017: 0.135},
-        'II_rt3': {2017: 0.225},
-        'II_rt4': {2017: 0.252},
-        'II_rt5': {2017: 0.297},
-        'II_rt6': {2017: 0.315},
-        'II_rt7': {2017: 0.3564}
-        }
+    reform = {2017: {
+        '_rate1': [0.09],
+        '_rate2': [0.135],
+        '_rate3': [0.225],
+        '_rate4': [0.252]
+        }}
 
     calc = get_calculator(baseline=False, calculator_start_year=2017,
-                          reform=reform, data='cps',
+                          reform=reform, data='pitSmallData.csv',
                           gfactors=GrowFactors(),
-                          records_start_year=CPS_START_YEAR)
+                          records_start_year=2017)
     assert calc.current_year == 2017
