@@ -81,7 +81,8 @@ def get_calculator(baseline, calculator_start_year, reform=None,
 
 
 def get_data(baseline=False, start_year=DEFAULT_START_YEAR, reform={},
-             data=None, client=None, num_workers=1):
+             data=None, gfactors=None, weights=None, client=None,
+             num_workers=1):
     '''
     This function creates dataframes of micro data with marginal tax
     rates and information to compute effective tax rates from the
@@ -108,7 +109,7 @@ def get_data(baseline=False, start_year=DEFAULT_START_YEAR, reform={},
     '''
     calc1 = get_calculator(baseline=baseline,
                            calculator_start_year=start_year,
-                           reform=reform, data=data)
+                           reform=reform, data=data, weights=weights)
 
     # create a temporary array to save all variables we need
     length = len(calc1.array('weight'))
@@ -131,7 +132,7 @@ def get_data(baseline=False, start_year=DEFAULT_START_YEAR, reform={},
     temp[:, 7] = calc1.array('GTI')
     temp[:, 8] = calc1.array('pitax')
     temp[:, 9] = calc1.current_year * np.ones(length)
-    temp[:, 10] = calc1.array('weight')
+    temp[:, 10] = 1  # calc1.array('weight') - the pitSmallData.csv has no weight variable
 
     # dictionary of data frames to return
     micro_data_dict = {}
@@ -210,7 +211,7 @@ def taxcalc_advance(calc1, year, length):
     temp[:, 7] = calc1.array('GTI')
     temp[:, 8] = calc1.array('pitax')
     temp[:, 9] = calc1.current_year * np.ones(length)
-    temp[:, 10] = calc1.array('weight')
+    temp[:, 10] = 1  # calc1.array('weight') - the pitSmallData.csv has no weight variable
 
     return temp
 
@@ -225,41 +226,40 @@ def cap_inc_mtr(calc1):
         calc1 (Tax-Calculator Calculator object): TC calculator
 
     Returns:
-        mtr_combined_capinc (Numpy array): array with marginal tax rates
-            for each observation in the TC Records object
+        avg_mtr_capinc (Numpy array): array with weight average of
+            marginal tax rates on different capital income sources for
+            each observation in the taxcalc Records object
 
     '''
-    capital_income_sources_taxed = (
-        'ST_CG_AMT_1', 'ST_CG_AMT_2', 'ST_CG_AMT_APPRATE',
-        'LT_CG_AMT_1', 'LT_CG_AMT_2', 'INCOME_OS_NOT_RACEHORSE')
 
-    # DATA does not have variable for non-taxable IRA distributions
+    # Sources of capital income in tax data
     capital_income_sources = (
         'ST_CG_AMT_1', 'ST_CG_AMT_2', 'ST_CG_AMT_APPRATE',
         'LT_CG_AMT_1', 'LT_CG_AMT_2', 'INCOME_OS_NOT_RACEHORSE')
 
     # calculating MTRs separately - can skip items with zero tax
     all_mtrs = {income_source: calc1.mtr(income_source) for
-                income_source in capital_income_sources_taxed}
+                income_source in capital_income_sources}
     # Get each column of income sources, to include non-taxable income
     record_columns = [calc1.array(x) for x in capital_income_sources]
     # weighted average of all those MTRs
-    total = (sum(map(abs, record_columns)) +
-             np.abs(calc1.array('SALARIES') - calc1.array(
-                 'PRFT_GAIN_BP_SPECLTV_BUS')))
-    # Note that all_mtrs gives fica (0), iit (1), and combined (2) mtrs
-    # We'll use the combined - hence all_mtrs[source][2]
-    capital_mtr = [abs(col) * all_mtrs[source][2] for col, source in
-                   zip(record_columns, capital_income_sources_taxed)]
-    mtr_combined_capinc = np.zeros_like(total)
-    mtr_combined_capinc[total != 0] = (
-        sum(capital_mtr + (
-            calc1.mtr('SALARIES')[2] * np.abs(
-                calc1.array('SALARIES') -
-                calc1.array('PRFT_GAIN_BP_SPECLTV_BUS'))))[total != 0] /
+    total = sum(map(abs, record_columns))
+    # Compute weighted avg mtr on capital income
+    capital_mtr = [abs(col) * all_mtrs[source] for col, source in
+                   zip(record_columns, capital_income_sources)]
+    avg_mtr_capinc = np.zeros_like(total)
+    avg_mtr_capinc[total != 0] = (
+        (capital_mtr[0] + capital_mtr[1] + capital_mtr[2] +
+         capital_mtr[3] + capital_mtr[4] + capital_mtr[5])[total != 0] /
         total[total != 0])
+
     # no capital income taxpayers
-    # give all the weight to interest income
-    mtr_combined_capinc[total == 0] =\
-        all_mtrs['INCOME_OS_NOT_RACEHORSE'][total == 0]
-    return mtr_combined_capinc
+    # want to give all the weight to interest income, but I think
+    # that is in INCOME_OS_NOT_RACEHORSE, but this income item has a
+    # zero mtr for everyone - maybe because not one has any of this income?
+    # mtr_combined_capinc[total == 0] =\
+    #     all_mtrs['INCOME_OS_NOT_RACEHORSE'][total == 0]
+    avg_mtr_capinc[total == 0] =\
+        all_mtrs['LT_CG_AMT_1'][total == 0]
+
+    return avg_mtr_capinc
