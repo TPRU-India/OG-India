@@ -1,6 +1,6 @@
 VAR_LABELS = {'Y': 'GDP ($Y_t$)', 'C': 'Consumption ($C_t$)',
               'L': 'Labor ($L_t$)', 'G': 'Government Expenditures',
-              'T_H': 'Lump sum transfers',
+              'TR': 'Lump sum transfers',
               'B': 'Wealth ($B_t$)', 'I_total': 'Investment ($I_t$)',
               'K': 'Capital Stock ($K_t$)',
               'K_d': 'Domestically-owned Capital Stock ($K^d_t$)',
